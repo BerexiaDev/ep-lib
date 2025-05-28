@@ -30,10 +30,17 @@ class Document:
     def db(self):
         return self.get_collection(self.__TABLE__)
 
-    def save(self):
-        if not self._id:
-            self._id = generate_id()
-        self._id = self.db().save(self.to_dict())
+    def save(self, **kwargs):
+        self._id = self._id or generate_id()
+        data = self.to_dict()
+        if self._id:
+            result = self.db(**kwargs).update_one(
+                {'_id': self._id},
+                {'$set': data},
+                upsert=True
+            )
+            if result.upserted_id:
+                self._id = result.upserted_id
         return self
 
     def save_all(self, items, **kwargs):

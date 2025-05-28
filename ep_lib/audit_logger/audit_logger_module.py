@@ -11,12 +11,10 @@ SUCCESS_STATUS_CODES = [200, 201, 204]
 DEFAULT_LOG_METHODS = ["POST", "PUT", "DELETE", "PATCH"]
 PRIMARY_KEY_MAPPING = {
     "users": "email",
-    "connectors": "name",
-    "refrences":"name",
-    "processes": "name",
-    "rules": "name",
-    "issues": "name",
-    "redemiation_actions": "description"
+    "hostings": "project_title",
+    "animations": "project_title",
+    "resources":"resource_name",
+    "restaurants": "name",
 }
 AUDIT_COLLECTION_NAME = "audit_trails"
 
