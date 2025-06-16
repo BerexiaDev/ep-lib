@@ -11,6 +11,14 @@ IGNORE_PATHS = [
     "/api/auth/forgot-password",
     "/api/auth/reset-password",
     "/api/audit-trails",
+    "/api/investor",
+    "/api/investor/search",
+    "/auth_investor/login",
+    "/auth_investor/register",
+    "/auth_investor/logout",
+    "/auth_investor/refresh",
+    "/auth_investor/forgot-password",
+    "/auth_investor/reset-password",
 ]
 
 def get_json_body(req: Request) -> Union[list, dict]:
