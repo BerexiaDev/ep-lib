@@ -1,5 +1,5 @@
 from ep_lib.document import Document
-from ep_lib.jwt_base import JWTbase
+from ep_lib.auth.models.jwt_base import JWTbase
 
 class Investor(Document, JWTbase):
     __TABLE__ = "investors"

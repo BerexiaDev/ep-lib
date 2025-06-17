@@ -1,5 +1,5 @@
 from ep_lib.document import Document
-from ep_lib.jwt_base import JWTbase
+from .jwt_base import JWTbase
 
 
 class User(Document, JWTbase):
