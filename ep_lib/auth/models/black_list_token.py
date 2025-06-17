@@ -1,6 +1,6 @@
 import datetime
 
-from ..document import Document
+from ...document import Document
 
 
 class BlacklistToken(Document):
