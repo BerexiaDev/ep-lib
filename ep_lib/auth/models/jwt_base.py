@@ -2,7 +2,7 @@ import datetime
 import inject
 import jwt
 import os
-from ep_lib.auth.black_list_token import BlacklistToken
+from ep_lib.auth.models.black_list_token import BlacklistToken
 from flask_bcrypt import Bcrypt
 
 class JWTbase:
