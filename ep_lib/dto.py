@@ -99,7 +99,7 @@ class UserDto:
 
 
 class InvestorDto:
-    api = Namespace('investor', description='investor related operations')
+    api = Namespace('investors', description='investors related operations')
     
     
     investor = api.model('investor', {
@@ -149,7 +149,7 @@ class AuthDto:
     
 
 class InvestorAuthDto:
-    api = Namespace('Investor auth', description='Investor authentication related operations')
+    api = Namespace('Investors auth', description='Investor authentication related operations')
     investor_auth = api.model('auth_details', {
         'email': fields.String(required=True, description='The email address'),
         'password': fields.String(required=True, description='The user password '),

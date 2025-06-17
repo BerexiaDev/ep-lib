@@ -55,11 +55,11 @@ class Document:
         self.from_dict(self.db().find_one(query))
         return self
 
-    def delete(self, query=None):
-        if self._id:
+    def delete(self, query=None, **kwargs):
+        if self.id:
             if not query:
-                query = {"_id": self._id}
-            self.db().remove(query)
+                query = {'_id': self._id}
+            self.db(**kwargs).delete_one(query)
         return self
 
     def to_dict(self):
