@@ -5,7 +5,7 @@ from ep_lib.audit_logger.models.audit_trail import AuditTrail
 from ep_lib.audit_logger.utils import get_json_body, get_only_changed_values_and_id, get_action, get_primary_key_value
 from ep_lib.audit_logger.utils import IGNORE_PATHS
 from loguru import logger
-from ep_lib.auth.user import User
+from ep_lib.auth.models.user import User
 
 SUCCESS_STATUS_CODES = [200, 201, 204]
 DEFAULT_LOG_METHODS = ["POST", "PUT", "DELETE", "PATCH"]
