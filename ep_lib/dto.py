@@ -22,6 +22,9 @@ class NullableBoolean(fields.Boolean):
     __schema_type__ = ["boolean", "null"]
     __schema_example__ = "nullable boolean"
 
+class NullableDatetime(fields.DateTime):
+    __schema_type__ = ['string', 'null']
+    __schema_example__ = 'nullable Datetime'
 
 class DynamicField(fields.Raw):
     def format(self, value):
