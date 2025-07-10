@@ -11,7 +11,6 @@ IGNORE_PATHS = [
     "/api/auth/forgot-password",
     "/api/auth/reset-password",
     "/api/audit-trails",
-    "/portal_user",
     "/portal_user_auth/login",
     "/portal_user_auth/register",
     "/portal_user_auth/logout",

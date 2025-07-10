@@ -4,7 +4,6 @@ from flask import Blueprint, request, g
 from ep_lib.audit_logger.models.audit_trail import AuditTrail
 from ep_lib.audit_logger.utils import get_json_body, get_only_changed_values_and_id, get_action, get_primary_key_value
 from ep_lib.audit_logger.utils import IGNORE_PATHS
-from loguru import logger
 from ep_lib.auth.user import User
 
 SUCCESS_STATUS_CODES = [200, 201, 204]
@@ -15,6 +14,7 @@ PRIMARY_KEY_MAPPING = {
     "animations": "project_title",
     "resources":"resource_name",
     "restaurants": "name",
+    "portal_users": "email"
 }
 AUDIT_COLLECTION_NAME = "audit_trails"
 
@@ -91,6 +91,11 @@ class AuditBlueprint(Blueprint):
 
 
             action = get_action(request.method, response.status_code)
+            
+            # Skip audit log for portal users if no auth token is present, as FO user has no token yet for creating
+            if table_name == "portal_users" and not request.headers.get('Authorization'):
+                return response
+            
             auth_token = request.headers.get('Authorization').split(" ")[1]
             decode_resp = User.decode_auth_token(auth_token)
             user = User().load({'_id':decode_resp.get("token")})
