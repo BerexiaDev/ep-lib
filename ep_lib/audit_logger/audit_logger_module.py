@@ -91,10 +91,22 @@ class AuditBlueprint(Blueprint):
 
 
             action = get_action(request.method, response.status_code)
-            auth_token = request.headers.get('Authorization').split(" ")[1]
-            decode_resp = User.decode_auth_token(auth_token)
-            user = User().load({'_id':decode_resp.get("token")})
-            self.create_log(action, table_name, endpoint, new_value=new_data, old_value=old_data, user_info=user.to_dict())
+            
+            # Handle missing Authorization header (e.g., during login requests)
+            auth_header = request.headers.get('Authorization')
+            user_info = None
+            
+            if auth_header and ' ' in auth_header:
+                try:
+                    auth_token = auth_header.split(" ")[1]
+                    decode_resp = User.decode_auth_token(auth_token)
+                    user = User().load({'_id': decode_resp.get("token")})
+                    user_info = user.to_dict()
+                except Exception:
+                    # If token decoding fails, user_info remains None
+                    pass
+            
+            self.create_log(action, table_name, endpoint, new_value=new_data, old_value=old_data, user_info=user_info)
 
         return response
 
