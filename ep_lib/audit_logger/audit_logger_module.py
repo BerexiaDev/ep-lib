@@ -11,10 +11,32 @@ SUCCESS_STATUS_CODES = [200, 201, 204]
 DEFAULT_LOG_METHODS = ["POST", "PUT", "DELETE", "PATCH"]
 PRIMARY_KEY_MAPPING = {
     "users": "email",
-    "hostings": "project_title",
-    "animations": "project_title",
-    "resources":"resource_name",
-    "restaurants": "name",
+    "portal_users": "email",
+    
+    # Tourism and accommodation services
+    "accommodation_opportunities": "title_fr",
+    "land_opportunities": "title_fr", 
+    "land_resources": "title_fr",
+    "tourist_products": "title_fr",
+    "tourist_packages": "title_fr",
+    "restaurant_products": "title_fr",
+    "ressources_touristiques": "title_fr",
+    "unclassified_accommodation": "title_fr",
+    "tourism_investment": "title_fr",
+    "project_bank": "title_fr",
+    "marketplace": "description_fr",
+    "tourism_offer": "promoteur",
+    
+    # Ticketing and request services
+    "contact_messages": "subject",
+    "investment_project": "fullName",
+    "advanced_communication_tools": "name",
+    "experiences_metaverse": "name", 
+    "tourism_resource_modeling": "name",
+    "tourism_prediction_request": "name",
+    
+    # Other services
+    "dynamic_pages": "page_type",
 }
 AUDIT_COLLECTION_NAME = "audit_trails"
 
