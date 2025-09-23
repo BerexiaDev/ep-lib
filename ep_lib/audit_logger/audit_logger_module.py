@@ -54,6 +54,10 @@ class AuditBlueprint(Blueprint):
         self.after_request(self.after_data_request)
 
     def _is_loggable(self, response) -> bool:
+        # Always log S2I operations regardless of method
+        table_name = g.get("table_name", "")
+        if table_name.startswith("s2i_"):
+            return response.status_code in SUCCESS_STATUS_CODES
         return request.method in self.log_methods and response.status_code in SUCCESS_STATUS_CODES
 
     def after_data_request(self, response):
@@ -94,7 +98,12 @@ class AuditBlueprint(Blueprint):
                         }
 
             elif request.method == 'GET':
-                new_data = old_data = None
+                # For S2I operations, we use the data we set in g.new_data
+                if table_name.startswith("s2i_"):
+                    new_data = g.get("new_data", None)
+                    old_data = None
+                else:
+                    new_data = old_data = None
             else:
                 if g.get("new_data") is None:
                     new_data, old_data = get_only_changed_values_and_id(old_data or {}, new_data) if old_data else (new_data, old_data)
@@ -110,9 +119,34 @@ class AuditBlueprint(Blueprint):
                         new_data = {
                             "name": primary_value
                         }
+            
+            # Handle S2I operations specially
+            if table_name.startswith("s2i_"):
+                if table_name.startswith("s2i_import"):
+                    # For import operations, create a descriptive message
+                    section = new_data.get("section", "all sections") if new_data else "all sections"
+                    new_data = {
+                        "name": f"Import completed for {section}",
+                        "operation": "import",
+                        "section": section
+                    }
+                elif table_name.startswith("s2i_export"):
+                    # For export operations, create a descriptive message
+                    section = new_data.get("section", "all sections") if new_data else "all sections"
+                    new_data = {
+                        "name": f"Export completed for {section}",
+                        "operation": "export", 
+                        "section": section
+                    }
 
 
-            action = get_action(request.method, response.status_code)
+            # Handle S2I operations action mapping
+            if table_name.startswith("s2i_import"):
+                action = "IMPORT"
+            elif table_name.startswith("s2i_export"):
+                action = "EXPORT"
+            else:
+                action = get_action(request.method, response.status_code)
             
             # Handle missing Authorization header (e.g., during login requests)
             auth_header = request.headers.get('Authorization')
