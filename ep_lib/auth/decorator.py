@@ -17,7 +17,13 @@ ROUTES_TO_SKIP = [
 ]
 
 
-def token_required(roles=None):
+def token_required(portal_user=False, roles=None):
+    """
+    Decorator to protect routes with JWT.
+    - portal_user: if True, uses AuthHelper.get_logged_in_portal_user
+                   else uses AuthHelper.get_logged_in_user
+    - roles: list/set of roles required to access the route
+    """
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
@@ -30,7 +36,10 @@ def token_required(roles=None):
                     return {"message": "Token is missing"}, 401
                 
                 # Fetch logged-in user data
-                data, status = AuthHelper.get_logged_in_user(request)
+                if portal_user:
+                    data, status = AuthHelper.get_logged_in_portal_user(request)
+                else:
+                    data, status = AuthHelper.get_logged_in_user(request)
                 
                 # Log the URL and token
                 if status != 200:
