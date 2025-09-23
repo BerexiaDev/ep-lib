@@ -21,7 +21,7 @@ class PortalUser(Document):
     consultation_objectives = None
     target_regions= None
     how_found_platform: None
-    
+
     # Tourism Investment Details
     type_of_investment = None
     company_name = None
@@ -32,8 +32,8 @@ class PortalUser(Document):
     asset_type= None
     region= None
     investment_amount = None
-    
-    
+
+
     # Market Intelligence
     business_sector = None
     country = None
@@ -44,11 +44,13 @@ class PortalUser(Document):
     concerned_project = None
     planned_data_use = None
     user_commitments = None
-    
+
     # Timestamps
     created_on = None
     modified_on = None
-    
+
+    favorites = None
+
     @property
     def password(self):
         raise AttributeError('password: write-only field')
@@ -82,7 +84,7 @@ class PortalUser(Document):
             )
         except Exception as e:
             return e
-        
+
     @staticmethod
     def encode_refresh_token(user_id, days=30):
         """
@@ -119,7 +121,7 @@ class PortalUser(Document):
                 return {
                      "status": "fail",
                      "message": "Token blacklisted. Please log in again.",
-                    } 
+                    }
             else:
                 return {"status": "success", "token": payload["sub"]}
         except jwt.ExpiredSignatureError:
@@ -129,6 +131,6 @@ class PortalUser(Document):
             }
         except jwt.InvalidTokenError:
             return {"status": "fail", "message": "Invalid token. Please log in again."}
-    
+
     def __repr__(self):
         return "<Investor '{} {}'>".format(self.first_name, self.last_name,self.email)
