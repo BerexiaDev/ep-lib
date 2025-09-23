@@ -4,7 +4,6 @@ from flask import Blueprint, request, g
 from ep_lib.audit_logger.models.audit_trail import AuditTrail
 from ep_lib.audit_logger.utils import get_json_body, get_only_changed_values_and_id, get_action, get_primary_key_value
 from ep_lib.audit_logger.utils import IGNORE_PATHS
-from loguru import logger
 from ep_lib.auth.user import User
 
 SUCCESS_STATUS_CODES = [200, 201, 204]
@@ -54,10 +53,18 @@ class AuditBlueprint(Blueprint):
         self.after_request(self.after_data_request)
 
     def _is_loggable(self, response) -> bool:
+        # Explicit override from query param
+        is_loggable_param = request.args.get("isLoggable")
+        if is_loggable_param is not None:
+            # Normalize to lowercase for safety
+            return is_loggable_param.lower() == "true" and response.status_code in SUCCESS_STATUS_CODES
+
         # Always log S2I operations regardless of method
         table_name = g.get("table_name", "")
         if table_name.startswith("s2i_"):
             return response.status_code in SUCCESS_STATUS_CODES
+
+        # Default: check method and status
         return request.method in self.log_methods and response.status_code in SUCCESS_STATUS_CODES
 
     def after_data_request(self, response):
