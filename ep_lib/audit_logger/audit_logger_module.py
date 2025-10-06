@@ -44,6 +44,9 @@ AUDIT_COLLECTION_NAME = "audit_trails"
 class AuditBlueprint(Blueprint):
     """
         AuditBlueprint is a blueprint that logs changes to a collection in a MongoDB database.
+        
+        The blueprint automatically skips logging for requests from the ep-fo frontend
+        by checking for the 'X-Frontend-Source' header set to 'ep-fo'.
     """
     def __init__(self, *args, **kwargs):
         self.log_methods = kwargs.pop("log_methods", DEFAULT_LOG_METHODS)
@@ -52,7 +55,19 @@ class AuditBlueprint(Blueprint):
         super(AuditBlueprint, self).__init__(*args, **kwargs)
         self.after_request(self.after_data_request)
 
+    def _is_frontend_request(self) -> bool:
+        """
+        Check if the request comes from the ep-fo frontend.
+        Detected by the custom header 'X-Frontend-Source' set to 'ep-fo'.
+        """
+        frontend_source = request.headers.get('X-Frontend-Source', '').lower()
+        return frontend_source == 'ep-fo'
+
     def _is_loggable(self, response) -> bool:
+        # Skip logging for requests from ep-fo frontend
+        if self._is_frontend_request():
+            return False
+            
         # Explicit override from query param
         is_loggable_param = request.args.get("isLoggable")
         if is_loggable_param is not None:
