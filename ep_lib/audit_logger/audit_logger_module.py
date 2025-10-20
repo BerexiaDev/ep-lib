@@ -128,7 +128,9 @@ class AuditBlueprint(Blueprint):
                     new_data = old_data = None
             else:
                 if g.get("new_data") is None:
-                    new_data, old_data = get_only_changed_values_and_id(old_data or {}, new_data) if old_data else (new_data, old_data)
+                    # Always call change detection, even when old_data is None
+                    # This ensures we catch changes from None to actual values
+                    new_data, old_data = get_only_changed_values_and_id(old_data or {}, new_data)
 
                 if response.status_code == 201:
                     if isinstance(new_data, list):
