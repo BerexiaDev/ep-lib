@@ -1,6 +1,6 @@
 from enum import Enum
 
-class StatutElement(Enum):
+class StatutS2I(Enum):
     ACTIF = "ACTIF"
     ARCHIVE = "ARCHIVE"
     PENDING_MOOVAPS = "PENDING_MOOVAPS"
