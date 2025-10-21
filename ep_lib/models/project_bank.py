@@ -33,6 +33,8 @@ class ProjectBank(Document):
     investment_amount = None
     is_archived = None
     archived_on = None
+    status = None
+    updated_at = None
 
     @classmethod
     def insert_banque_de_projet_df(cls, df):

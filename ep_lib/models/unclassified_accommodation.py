@@ -27,6 +27,8 @@ class UnclassifiedAccommodation(Document):
     description_es = None
     is_archived = None
     archived_on = None
+    status = None
+    updated_at = None
 
     @classmethod
     def insert_herbegement_non_classe_df(cls, df):

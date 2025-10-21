@@ -38,6 +38,8 @@ class LandResources(Document):
     intensity = None
     is_archived = None
     archived_on = None
+    status = None
+    updated_at = None
 
     @classmethod
     def insert_ressources_foncieres_df(cls, df):

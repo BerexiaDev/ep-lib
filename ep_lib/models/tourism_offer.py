@@ -25,6 +25,8 @@ class TourismOffer(Document):
     emplois_directs = None
     is_archived = None
     archived_on = None
+    status = None
+    updated_at = None
 
 
     @classmethod
