@@ -49,10 +49,13 @@ class Document:
         self.db().insert_many(items)
         return items
 
-    def load(self, query=None):
+    def load(self, query=None, **kwargs):
         if not query:
-            query = {"_id": self._id}
-        self.from_dict(self.db().find_one(query))
+            query = {'_id': self._id}
+        result = self.db(**kwargs).find_one(query)
+        if not result:
+            return None
+        self.from_dict(result)
         return self
 
     def delete(self, query=None):
