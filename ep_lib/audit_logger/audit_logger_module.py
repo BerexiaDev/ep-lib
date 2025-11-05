@@ -33,6 +33,7 @@ PRIMARY_KEY_MAPPING = {
     "experiences_metaverse": "name", 
     "tourism_resource_modeling": "name",
     "tourism_prediction_request": "name",
+    "etudes_concepte": "study_title",
     
     # Other services
     "dynamic_pages": "page_type",
