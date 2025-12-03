@@ -1,8 +1,9 @@
-import inject
-from flask_pymongo import PyMongo
-from flask import g
-
-from ep_lib.utils import generate_id
+from typing import List, Dict
+from app.main import mongo
+from ep_lib.utils.strings import generate_id
+from loguru import logger
+from pymongo import UpdateOne
+from ep_lib.utils.date_utils import get_now_utc
 
 
 class Document:
@@ -10,7 +11,6 @@ class Document:
     _id = None
 
     def __init__(self, **kwargs):
-        g.table_name = self.__TABLE__
         for k, v in kwargs.items():
             self.__setattr__(k, v)
 
@@ -22,13 +22,9 @@ class Document:
     def id(self, value):
         self._id = value
 
-    @classmethod
-    def get_collection(cls, collection_name):
-        mongo = inject.instance(PyMongo)
-        return mongo.db[collection_name]
-
-    def db(self):
-        return self.get_collection(self.__TABLE__)
+    # @property
+    def db(self, **kwargs):
+        return mongo.db[self.__TABLE__]
 
     def save(self, **kwargs):
         self._id = self._id or generate_id()
@@ -43,23 +39,20 @@ class Document:
                 self._id = result.upserted_id
         return self
 
-    def save_all(self, items, **kwargs):
-        kwargs = kwargs or {}
-        items = [{"_id": generate_id(), **item, **kwargs} for item in items]
-        self.db().insert_many(items)
-        return items
-
-    def load(self, query=None):
+    def load(self, query=None, **kwargs):
         if not query:
-            query = {"_id": self._id}
-        self.from_dict(self.db().find_one(query))
+            query = {'_id': self._id}
+        result = self.db(**kwargs).find_one(query)
+        if not result:
+            return None
+        self.from_dict(result)
         return self
 
-    def delete(self, query=None):
-        if self._id:
+    def delete(self, query=None, **kwargs):
+        if self.id:
             if not query:
-                query = {"_id": self._id}
-            self.db().remove(query)
+                query = {'_id': self._id}
+            self.db(**kwargs).delete_one(query)
         return self
 
     def to_dict(self):
@@ -69,37 +62,120 @@ class Document:
         if d:
             self.__dict__ = d
         else:
-            self._id = None
+            self.id = None
         return self
 
     @classmethod
-    def get_all(cls, query=None):
-        if query is None:
-            query = {}
-        return [cls(**r) for r in cls().db().find(query)]
-
-    @classmethod
-    def drop(cls):
-        return cls().db().drop()
+    def get_all(cls, query={},skip=0, limit=0, **kwargs):
+        cursor = cls().db(**kwargs).find(query)
+        
+        sort = kwargs.get('sort')
+        if sort:
+            cursor = cursor.sort(sort)
+        if skip:
+            cursor = cursor.skip(skip)
+        if limit:
+            cursor = cursor.limit(limit)
+        return [cls(**r) for r in cursor]
 
     @classmethod
     def delete_all(cls, query):
         if query:
             cls().db().delete_many(query)
 
-    def update(self, data: dict):
-        self.db().update_one({"_id": self._id}, {"$set": data})
-        # for k, v in data.items():
-        #     self.__setattr__(k, v)
-        # return self
-        
+
     @classmethod
-    def count(cls, query=None):
+    def count(cls, query: dict, **kwargs) -> int:
         """
-        Count documents matching the query.
-        
-        :param query: dict, The filter query (default: {}).
-        :return: int, Number of matching documents.
+        Count documents matching a given query.
+        If no query is provided, count all documents.
         """
         query = query or {}
-        return cls().db().count_documents(query)
+        return cls().db(**kwargs).count_documents(query)
+    
+    @classmethod
+    def drop(cls, **kwargs):
+        count_before = cls.count()
+        logger.info(f"Dropping collection {cls.__TABLE__} with {count_before} documents")
+        return cls().db(**kwargs).drop()
+    
+    @classmethod
+    def bulk_insert(cls, data: List[Dict], **kwargs):
+        """
+        Perform a bulk insert of multiple documents into the collection.
+        Ensures each document has a unique _id.
+        """
+        if not data:
+            return []
+
+        # Assign generated _id if not already provided
+        for doc in data:
+            if '_id' not in doc or not doc['_id']:
+                doc['_id'] = generate_id()
+
+        result = cls().db(**kwargs).insert_many(data)
+        return result.inserted_ids
+
+    @classmethod
+    def bulk_upsert(cls, records: List[Dict], create_date_field="created_at", update_date_field="updated_at"):
+        """
+        Upsert records based strictly on '_id'.
+        - If '_id' exists in record -> Update that specific doc.
+        - If '_id' is missing -> Generate new '_id' and Insert.
+        - Automatically handles created/updated timestamps.
+        """
+        if not records:
+            return
+
+        operations = []
+        if create_date_field or update_date_field:
+            now = get_now_utc()
+
+        for rec in records:
+            rec_data = rec.copy()
+            
+            # 1. Identify the ID
+            doc_id = rec_data.pop('_id', None)
+            
+            if not doc_id:
+                doc_id = generate_id() # Generate a new ID if none provided
+            
+            # Remove any existing creation/update timestamps so the upsert can regenerate them cleanly
+            if create_date_field in rec_data:
+                del rec_data[create_date_field]
+            
+            if update_date_field in rec_data:
+                del rec_data[update_date_field]
+            
+            # 2. Prepare the $set payload (Updates applied to BOTH new and existing)
+            set_payload = rec_data
+            if update_date_field:
+                set_payload[update_date_field] = now
+
+            # 3. Prepare the $setOnInsert payload (Applied ONLY to new inserts)
+            insert_payload = {}
+            if create_date_field:
+                insert_payload[create_date_field] = now
+
+            op = UpdateOne(
+                filter={"_id": doc_id},
+                update={
+                    "$set": set_payload,
+                    "$setOnInsert": insert_payload
+                },
+                upsert=True
+            )
+            operations.append(op)
+
+        # Execute
+        if operations:
+            result = cls().db().bulk_write(operations)
+            logger.info(f"Bulk Upsert - Matched/Updated: {result.matched_count}, New Inserts: {result.upserted_count}")
+
+
+    @classmethod
+    def aggregate(cls, pipeline):
+        """Perform an aggregation pipeline query."""
+        return [cls(**r) for r in cls().db().aggregate(pipeline)]
+    
+
