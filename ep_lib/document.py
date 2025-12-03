@@ -85,7 +85,7 @@ class Document:
 
 
     @classmethod
-    def count(cls, query: dict, **kwargs) -> int:
+    def count(cls, query = None, **kwargs) -> int:
         """
         Count documents matching a given query.
         If no query is provided, count all documents.
