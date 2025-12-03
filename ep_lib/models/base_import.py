@@ -109,7 +109,7 @@ class BaseImport(Document, MinioUtilities):
                 return
             
             # IMPORT INSIDE THE METHOD TO BREAK THE CIRCULAR LOOP
-            from ep_lib.utils.conts import EXCEL_TO_MONGO_FIELD_MAPPINGS
+            from ep_lib.utils.excel_mappings import EXCEL_TO_MONGO_FIELD_MAPPINGS
 
             mapping = EXCEL_TO_MONGO_FIELD_MAPPINGS.get(cls.__TABLE__)
             if not mapping:
@@ -160,7 +160,7 @@ class BaseImport(Document, MinioUtilities):
         - uses only Excel/Moovapps field names
         - contains exactly the fields defined in MONGO_TO_EXCEL_FIELD_MAPPINGS
         """
-        from ep_lib.utils.conts import MONGO_TO_EXCEL_FIELD_MAPPINGS
+        from ep_lib.utils.excel_mappings import MONGO_TO_EXCEL_FIELD_MAPPINGS
 
         record = self.to_dict()
         field_mapping = MONGO_TO_EXCEL_FIELD_MAPPINGS.get(self.__TABLE__, {})
