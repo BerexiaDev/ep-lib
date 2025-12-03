@@ -12,7 +12,7 @@ from flask import current_app
 from loguru import logger
 from minio import Minio
 from minio.error import S3Error
-from ep_lib.utils.excel_mappings import ALLOWED_EXTENSIONS
+from ep_lib.utils.conts import ALLOWED_EXTENSIONS
 from werkzeug.utils import secure_filename
 
 
