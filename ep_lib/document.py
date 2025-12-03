@@ -66,16 +66,40 @@ class Document:
         return self
 
     @classmethod
-    def get_all(cls, query={},skip=0, limit=0, **kwargs):
-        cursor = cls().db(**kwargs).find(query)
-        
-        sort = kwargs.get('sort')
+    def get_all(cls, query=None, skip=0, limit=0, sort=None, random_sample=False, collation=None, **kwargs):
+        """Return documents matching *query* with optional sampling.
+
+        When ``random_sample`` is True and a positive ``limit`` is provided, the
+        query is executed through an aggregation pipeline that performs a
+        ``$sample`` stage. This yields a randomized subset of documents while
+        respecting the provided filters and limit.
+        """
+
+        query = query or {}
+        collection = cls().db(**kwargs)
+
+        if random_sample and limit > 0:
+            pipeline = []
+            if query:
+                pipeline.append({"$match": query})
+            pipeline.append({"$sample": {"size": limit}})
+            if collation:
+                cursor = collection.aggregate(pipeline, collation=collation)
+            else:
+                cursor = collection.aggregate(pipeline)
+            return [cls(**r) for r in cursor]
+
+        if collation:
+            cursor = collection.find(query, collation=collation)
+        else:
+            cursor = collection.find(query)
         if sort:
             cursor = cursor.sort(sort)
         if skip:
             cursor = cursor.skip(skip)
         if limit:
             cursor = cursor.limit(limit)
+
         return [cls(**r) for r in cursor]
 
     @classmethod
