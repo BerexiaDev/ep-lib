@@ -41,7 +41,7 @@ class TouristProduct(BaseImport):
     @classmethod
     def _determine_doc_type(cls, record: dict):
         """Override base method for complex logic"""
-        return cls.get_doc_type(
+        return cls._get_doc_type(
             record.get("asset_type"), 
             record.get("new_decree_category")
         )
