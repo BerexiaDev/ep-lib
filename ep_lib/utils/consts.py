@@ -14,23 +14,6 @@ from ep_lib.models.tourism_investment  import TourismInvestment
 from ep_lib.models.tourism_offer  import TourismOffer
 
 
-# Allowed file extensions for uploads
-ALLOWED_EXTENSIONS = {
-    "png",
-    "jpg",
-    "jpeg",
-    "bmp",
-    "webp",
-    "svg",
-    "pdf",
-    "xls",
-    "xlsx",
-    "csv",
-    "doc",
-    "docx",
-    "txt",
-}
-
 MongoCollectionToModelMap = {
     MongoCollectionsEnum.TOURIST_PRODUCTS.value: TouristProduct,
     MongoCollectionsEnum.RESTAURANT_PRODUCTS.value: RestaurantProducts,

@@ -12,9 +12,25 @@ from flask import current_app
 from loguru import logger
 from minio import Minio
 from minio.error import S3Error
-from ep_lib.utils.consts import ALLOWED_EXTENSIONS
 from werkzeug.utils import secure_filename
 
+
+# Allowed file extensions for uploads
+ALLOWED_EXTENSIONS = {
+    "png",
+    "jpg",
+    "jpeg",
+    "bmp",
+    "webp",
+    "svg",
+    "pdf",
+    "xls",
+    "xlsx",
+    "csv",
+    "doc",
+    "docx",
+    "txt",
+}
 
 
 def _normalize_endpoint(endpoint: str) -> Tuple[str, Optional[bool]]:
