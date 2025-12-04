@@ -1,8 +1,9 @@
 from ep_lib.utils.enums import DocTypeEnum
 from ep_lib.models.base_import import BaseImport
+from ep_lib.utils.enums import MongoCollectionsEnum
 
 class Marketplace(BaseImport):
-    __TABLE__ = 'marketplace'
+    __TABLE__ = MongoCollectionsEnum.MARKETPLACE.value
     IMAGE_BUCKET = "marketplace"
     DOC_TYPE_ENUM = DocTypeEnum.MARKETPLACE.value
 

@@ -1,8 +1,9 @@
 from ep_lib.models.base_import import BaseImport
+from ep_lib.utils.enums import MongoCollectionsEnum
 
 
 class UnclassifiedAccommodation(BaseImport):
-    __TABLE__ = 'unclassified_accommodation'
+    __TABLE__ = MongoCollectionsEnum.UNCLASSIFIED_ACCOMMODATION.value
     IMAGE_BUCKET = "unclassified-accommodation"
     INT_FIELDS = ["opening_date"]
 

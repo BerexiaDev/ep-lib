@@ -4,6 +4,7 @@ from loguru import logger
 from ep_lib.utils.strings import clean_value
 from ep_lib.document import Document
 from ep_lib.models.minio_utilities import MinioUtilities
+from ep_lib.utils.excel_mappings import EXCEL_TO_MONGO_FIELD_MAPPINGS
 
 
 class BaseImport(Document, MinioUtilities):
@@ -108,9 +109,6 @@ class BaseImport(Document, MinioUtilities):
                 logger.info(f"[{cls.__TABLE__}] No data to insert.")
                 return
             
-            # IMPORT INSIDE THE METHOD TO BREAK THE CIRCULAR LOOP
-            from ep_lib.utils.excel_mappings import EXCEL_TO_MONGO_FIELD_MAPPINGS
-
             mapping = EXCEL_TO_MONGO_FIELD_MAPPINGS.get(cls.__TABLE__)
             if not mapping:
                 logger.error(f"[{cls.__TABLE__}] No field mapping found.")

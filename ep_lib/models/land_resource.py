@@ -1,8 +1,9 @@
 from ep_lib.utils.enums import DocTypeEnum
 from ep_lib.models.base_import import BaseImport
+from ep_lib.utils.enums import MongoCollectionsEnum
 
 class LandResources(BaseImport):
-    __TABLE__ = 'land_resources'
+    __TABLE__ = MongoCollectionsEnum.LAND_RESOURCES.value
     IMAGE_BUCKET = "land-resources"
     DOC_TYPE_ENUM = DocTypeEnum.RESSOURCE_FONCIERE.value
     JSON_ARRAY_FIELDS = ["polygone"]

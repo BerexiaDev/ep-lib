@@ -1,9 +1,10 @@
 from ep_lib.utils.enums import DocTypeEnum
 from ep_lib.models.base_import import BaseImport
+from ep_lib.utils.enums import MongoCollectionsEnum
 
 
 class RestaurantProducts(BaseImport):
-    __TABLE__ = 'restaurant_products'
+    __TABLE__ = MongoCollectionsEnum.RESTAURANT_PRODUCTS.value
     IMAGE_BUCKET = "restaurant-products"
     DOC_TYPE_ENUM = DocTypeEnum.RESTAURATION_PRODUCT.value
     INT_FIELDS = ["opening_date"]

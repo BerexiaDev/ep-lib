@@ -1,7 +1,8 @@
 from ep_lib.models.base_import import BaseImport
+from ep_lib.utils.enums import MongoCollectionsEnum
 
 class TourismInvestment(BaseImport):
-    __TABLE__ = 'tourism_investment'
+    __TABLE__ = MongoCollectionsEnum.TOURISM_INVESTMENT.value
     IMAGE_BUCKET = "tourism-investment"
 
     id = None	

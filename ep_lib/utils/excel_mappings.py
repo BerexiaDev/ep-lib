@@ -1,15 +1,4 @@
-from ep_lib.models.tourist_product import TouristProduct
-from ep_lib.models.restaurant_products import RestaurantProducts
-from ep_lib.models.unclassified_accommodation import UnclassifiedAccommodation
-from ep_lib.models.tourist_package import TouristPackages
-from ep_lib.models.accommodation_opportunitie import AccommodationOpportunities
-from ep_lib.models.land_opportunitie import LandOpportunities
-from ep_lib.models.project_bank import ProjectBank
-from ep_lib.models.land_resource import LandResources
-from ep_lib.models.tourist_resource import TouristResources
-from ep_lib.models.marketplace import Marketplace
-from ep_lib.models.tourism_investment import TourismInvestment
-from ep_lib.models.tourism_offer import TourismOffer
+from ep_lib.utils.enums import MongoCollectionsEnum
 
 
 def invert_mapping(mapping: dict) -> dict:
@@ -19,7 +8,7 @@ def invert_mapping(mapping: dict) -> dict:
 # mapping for MongoDB field names to Excel column names
 EXCEL_TO_MONGO_FIELD_MAPPINGS = {
     # Imported from Excel
-    TouristProduct.__TABLE__: {
+    MongoCollectionsEnum.TOURIST_PRODUCTS.value: {
         "id": "_id",
         "sip_id": "sip_id",
         "titre": "title_fr",
@@ -49,7 +38,7 @@ EXCEL_TO_MONGO_FIELD_MAPPINGS = {
         "updated_at": "updated_at",
         "created_at": "created_at"
     },
-    RestaurantProducts.__TABLE__: {
+    MongoCollectionsEnum.RESTAURANT_PRODUCTS.value: {
         "id": "_id",
         "sip_id": "sip_id",
         "titre": "title_fr",
@@ -75,7 +64,7 @@ EXCEL_TO_MONGO_FIELD_MAPPINGS = {
         "updated_at": "updated_at",
         "created_at": "created_at"
     },
-    UnclassifiedAccommodation.__TABLE__: {
+    MongoCollectionsEnum.UNCLASSIFIED_ACCOMMODATION.value: {
         "id": "_id",
         "sip_id": "sip_id",
         "titre": "title_fr",
@@ -105,7 +94,7 @@ EXCEL_TO_MONGO_FIELD_MAPPINGS = {
         "updated_at": "updated_at",
         "created_at": "created_at"
     },
-    TouristPackages.__TABLE__: {
+    MongoCollectionsEnum.TOURIST_PACKAGES.value: {
         "id": "_id",
         "sip_id": "sip_id",
         "id_circuit": "circuit_id",
@@ -134,7 +123,7 @@ EXCEL_TO_MONGO_FIELD_MAPPINGS = {
         "updated_at": "updated_at",
         "created_at": "created_at"
     },
-    AccommodationOpportunities.__TABLE__: {
+    MongoCollectionsEnum.ACCOMMODATION_OPPORTUNITIES.value: {
         "id": "_id",
         "sip_id": "opportunity_id",
         "type_opportunite": "opportunity_type",
@@ -171,7 +160,7 @@ EXCEL_TO_MONGO_FIELD_MAPPINGS = {
         "updated_at": "updated_at",
         "created_at": "created_at"
     },
-    LandOpportunities.__TABLE__: {
+    MongoCollectionsEnum.LAND_OPPORTUNITIES.value: {
         "id": "_id",
         "sip_id": "opportunity_id",
         "type_opportunite": "opportunity_type",
@@ -212,7 +201,7 @@ EXCEL_TO_MONGO_FIELD_MAPPINGS = {
         "updated_at": "updated_at",
         "created_at": "created_at"
     },
-    ProjectBank.__TABLE__: {
+    MongoCollectionsEnum.PROJECT_BANK.value: {
         "id": "_id",
         "sip_id": "project_id",
         "type_opportunite": "opportunity_type",
@@ -241,7 +230,7 @@ EXCEL_TO_MONGO_FIELD_MAPPINGS = {
         "updated_at": "updated_at",
         "created_at": "created_at"
     },
-    LandResources.__TABLE__: {
+    MongoCollectionsEnum.LAND_RESOURCES.value: {
         "id": "_id",
         "sip_id": "resource_id",
         "region": "region",
@@ -271,7 +260,7 @@ EXCEL_TO_MONGO_FIELD_MAPPINGS = {
         "updated_at": "updated_at",
         "created_at": "created_at"
     },
-    TouristResources.__TABLE__: {
+    MongoCollectionsEnum.TOURIST_RESOURCES.value: {
         "id": "_id",
         "sip_id": "resource_id",
         "titre": "title_fr",
@@ -294,7 +283,7 @@ EXCEL_TO_MONGO_FIELD_MAPPINGS = {
         "updated_at": "updated_at",
         "created_at": "created_at"
     },
-    Marketplace.__TABLE__: {
+    MongoCollectionsEnum.MARKETPLACE.value: {
         "id": "_id",
         "sip_id": "sip_id",
         "type_opportunite": "opportunity_type",
@@ -330,7 +319,7 @@ EXCEL_TO_MONGO_FIELD_MAPPINGS = {
         "created_at": "created_at"
     },
 
-    TourismInvestment.__TABLE__: {
+    MongoCollectionsEnum.TOURISM_INVESTMENT.value: {
         "id": "id",
         "region": "region",
         "prefecture_province": "city",
@@ -352,7 +341,7 @@ EXCEL_TO_MONGO_FIELD_MAPPINGS = {
         "updated_at": "updated_at",
         "created_at": "created_at"
     },
-    TourismOffer.__TABLE__: {
+    MongoCollectionsEnum.TOURISM_OFFER.value: {
         "id": "id",
         "region": "region",
         "prefecture_province": "city",

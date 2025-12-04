@@ -1,7 +1,8 @@
 from ep_lib.models.base_import import BaseImport
+from ep_lib.utils.enums import MongoCollectionsEnum
 
 class ProjectBank(BaseImport):
-    __TABLE__ = 'project_bank'
+    __TABLE__ = MongoCollectionsEnum.PROJECT_BANK.value
     IMAGE_BUCKET = "project-bank"
 
 

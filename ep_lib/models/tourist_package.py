@@ -1,9 +1,10 @@
 from ep_lib.utils.enums import DocTypeEnum
 from ep_lib.models.base_import import BaseImport
+from ep_lib.utils.enums import MongoCollectionsEnum
 
 
 class TouristPackages(BaseImport):
-    __TABLE__ = 'tourist_packages'
+    __TABLE__ = MongoCollectionsEnum.TOURIST_PACKAGES.value
     IMAGE_BUCKET = "tourist-packages"
     DOC_TYPE_ENUM = DocTypeEnum.TOURIST_PACKAGE.value
 

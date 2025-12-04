@@ -1,10 +1,11 @@
 from ep_lib.models.base_import import BaseImport
 from ep_lib.utils.enums import DocTypeEnum
+from ep_lib.utils.enums import MongoCollectionsEnum
 
 
 
 class AccommodationOpportunities(BaseImport):
-    __TABLE__ = 'accommodation_opportunities'
+    __TABLE__ = MongoCollectionsEnum.ACCOMMODATION_OPPORTUNITIES.value
     IMAGE_BUCKET = "accommodation-opportunities"
     DOC_TYPE_ENUM = DocTypeEnum.OPPORTUNITE_HEBERGEMENT.value
 
