@@ -7,6 +7,12 @@ class StatutS2I(Enum):
     PENDING_E_PRODUITS = "PENDING_E_PRODUITS"
     REJETE_MOOVAPS = "REJETE_MOOVAPS"
     REJETE_E_PRODUITS = "REJETE_E_PRODUITS"
+
+class TicketingStatusEnum(Enum):
+    """Generic status enum for all ticketing sections (Contact, Etudes Concepte, etc.)"""
+    IN_PROGRESS = "IN_PROGRESS"
+    PROCESSED = "PROCESSED"
+    CLOSED = "CLOSED"
     
     
 class DocTypeEnum(Enum):
@@ -22,3 +28,18 @@ class DocTypeEnum(Enum):
     RESSOURCE_TOURISTIQUE = "RESSOURCE_TOURISTIQUE"
     TOURIST_PACKAGE = "TOURIST_PACKAGE"
     MARKETPLACE = "MARKETPLACE"
+
+
+class MongoCollectionsEnum(Enum):
+    TOURIST_PRODUCTS = "tourist_products"
+    RESTAURANT_PRODUCTS = "restaurant_products"
+    UNCLASSIFIED_ACCOMMODATION = "unclassified_accommodation"
+    TOURIST_PACKAGES = "tourist_packages"
+    ACCOMMODATION_OPPORTUNITIES = "accommodation_opportunities"
+    LAND_OPPORTUNITIES = "land_opportunities"
+    PROJECT_BANK = "project_bank"
+    LAND_RESOURCES = "land_resources"
+    TOURIST_RESOURCES = "tourism_resources"
+    MARKETPLACE = "marketplace"
+    TOURISM_INVESTMENT = "tourism_investment"
+    TOURISM_OFFER = "tourism_offer"
