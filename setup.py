@@ -13,6 +13,7 @@ setup(
         "loguru==0.6.0",
         "pandas==1.3.5",
         "numpy==1.21.6",
+        "minio==7.2.7",
         "Flask-Bcrypt==1.0.1",
     ],
     author='Berexia dev',
