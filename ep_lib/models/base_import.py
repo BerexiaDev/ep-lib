@@ -4,7 +4,7 @@ from loguru import logger
 from ep_lib.utils.strings import clean_value
 from ep_lib.document import Document
 from ep_lib.models.minio_utilities import MinioUtilities
-from ep_lib.utils.excel_mappings import EXCEL_TO_MONGO_FIELD_MAPPINGS
+from ep_lib.utils.import_mappings import EXCEL_TO_MONGO_FIELD_MAPPINGS, MONGO_TO_EXCEL_FIELD_MAPPINGS
 
 
 class BaseImport(Document, MinioUtilities):
@@ -158,7 +158,6 @@ class BaseImport(Document, MinioUtilities):
         - uses only Excel/Moovapps field names
         - contains exactly the fields defined in MONGO_TO_EXCEL_FIELD_MAPPINGS
         """
-        from ep_lib.utils.excel_mappings import MONGO_TO_EXCEL_FIELD_MAPPINGS
 
         record = self.to_dict()
         field_mapping = MONGO_TO_EXCEL_FIELD_MAPPINGS.get(self.__TABLE__, {})

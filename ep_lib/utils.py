@@ -1,9 +1,3 @@
-import uuid
-
-
-def generate_id():
-    return uuid.uuid4().hex.upper()
-
 
 def build_advanced_filter(filters: dict, search_key: str = "name") -> dict:
     """
