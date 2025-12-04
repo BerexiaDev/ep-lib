@@ -43,3 +43,17 @@ class MongoCollectionsEnum(Enum):
     MARKETPLACE = "marketplace"
     TOURISM_INVESTMENT = "tourism_investment"
     TOURISM_OFFER = "tourism_offer"
+
+
+class S2IStatusEnum(Enum):
+    ACTIF = "ACTIF"  # éléments à afficher
+    ARCHIVE = "ARCHIVE"  # éléments archivés (pas de suppression physique)
+
+    SUPPRIME = "SUPPRIME"  # supprimés côté Moovapps → marqués comme supprimés côté e-Produit
+
+    PENDING_MOOVAPPS = "PENDING_MOOVAPPS"  # en attente de validation côté Moovapps
+    PENDING_AJOUT_E_PRODUITS = "PENDING_AJOUT_E_PRODUITS"  # ajout en attente côté e-Produit
+    PENDING_UPDATE_E_PRODUITS = "PENDING_UPDATE_E_PRODUITS"  # mise à jour en attente côté e-Produit
+
+    REJETE_MOOVAPPS = "REJETE_MOOVAPPS"  # rejeté par Moovapps
+    REJETE_E_PRODUITS = "REJETE_E_PRODUITS"  # rejeté par e-Produit
