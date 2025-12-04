@@ -625,7 +625,6 @@ class TourismInvestmentDTO:
         },
     )
 
-
 class S2IDTO:
     api = Namespace("S2I", description="S2I import/export operations")    
 
