@@ -172,7 +172,10 @@ class TouristProductDTO:
             "document_type": NullableString(description="Document type"),
             "intensity": NullableInteger(description="Intensity"),
             "archived_on": NullableDatetime(description="Date of archivation"),
-            "images": fields.List(fields.String, description="List of image URLs"),
+            "images": fields.Raw(
+                description="Can be images URLs separated by comma or a List of URL strings", 
+                example=["http://url1.com", "http://url2.com"]
+            ),
             "status": NullableString(description="Resource status", skip_none=True),
             "created_at": NullableDatetime(description="Creation date", skip_none=True),
             "updated_at": NullableDatetime(description="Last update date", skip_none=True),
@@ -209,7 +212,10 @@ class RestaurantProductDTO:
             "document_type": NullableString(description="Document type"),
             "intensity": NullableInteger(description="Intensity"),
             "archived_on": NullableDatetime(description="Date of archivation"),
-            "images": fields.List(fields.String, description="List of image URLs"),
+            "images": fields.Raw(
+                description="Can be images URLs separated by comma or a List of URL strings", 
+                example=["http://url1.com", "http://url2.com"]
+            ),
             "status": NullableString(description="Resource status", skip_none=True),
             "created_at": NullableDatetime(description="Creation date", skip_none=True),
             "updated_at": NullableDatetime(description="Last update date", skip_none=True),
@@ -248,7 +254,10 @@ class UnclassifiedAccommodationDTO:
             "description_ar": NullableString(description="Description in Arabic"),
             "intensity": NullableInteger(description="Intensity"),
             "archived_on": NullableDatetime(description="Date of archivation"),
-            "images": fields.List(fields.String, description="List of image URLs"),
+            "images": fields.Raw(
+                description="Can be images URLs separated by comma or a List of URL strings", 
+                example=["http://url1.com", "http://url2.com"]
+            ),
             "status": NullableString(description="Resource status", skip_none=True),
             "created_at": NullableDatetime(description="Creation date", skip_none=True),
             "updated_at": NullableDatetime(description="Last update date", skip_none=True),
@@ -302,7 +311,10 @@ class TouristPackageDTO:
             "product_details": fields.Nested(product_details_model, skip_none=True),
             "restaurant_details": fields.Nested(restaurant_details_model, skip_none=True),
             "archived_on": NullableDatetime(description="Date of archivation"),
-            "images": fields.List(fields.String, description="List of image URLs"),
+            "images": fields.Raw(
+                description="Can be images URLs separated by comma or a List of URL strings", 
+                example=["http://url1.com", "http://url2.com"]
+            ),
             "status": NullableString(description="Resource status", skip_none=True),
             "created_at": NullableDatetime(description="Creation date", skip_none=True),
             "updated_at": NullableDatetime(description="Last update date", skip_none=True),
@@ -349,7 +361,10 @@ class AccommodationOpportunityDTO:
             "intensity": NullableInteger(description="Intensity"),
             "document_type": NullableString(description="Document type"),
             "archived_on": NullableDatetime(description="Date of archivation"),
-            "images": fields.List(fields.String, description="List of image URLs"),
+            "images": fields.Raw(
+                description="Can be images URLs separated by comma or a List of URL strings", 
+                example=["http://url1.com", "http://url2.com"]
+            ),
             "status": NullableString(description="Resource status", skip_none=True),
             "created_at": NullableDatetime(description="Creation date", skip_none=True),
             "updated_at": NullableDatetime(description="Last update date", skip_none=True),
@@ -401,7 +416,10 @@ class LandOpportunityDTO:
             "district_municipality": NullableString(description="Arrondissement Commune"),
             "archived_on": NullableDatetime(description="Date of archivation"),
             "polygone": fields.Raw(description="Polygon coordinates supporting both simple polygons [[lat,lng],...] and MultiPolygons [[[lat,lng],...], [[lat,lng],...]]"),
-            "images": fields.List(fields.String, description="List of image URLs"),
+            "images": fields.Raw(
+                description="Can be images URLs separated by comma or a List of URL strings", 
+                example=["http://url1.com", "http://url2.com"]
+            ),
             "status": NullableString(description="Resource status", skip_none=True),
             "created_at": NullableDatetime(description="Creation date", skip_none=True),
             "updated_at": NullableDatetime(description="Last update date", skip_none=True),
@@ -440,7 +458,10 @@ class LandResourceDTO:
             "intensity": NullableString(description="Intensity"),
             "archived_on": NullableDatetime(description="Date of archivation"),
             "polygone": fields.Raw(description="Polygon coordinates supporting both simple polygons [[lat,lng],...] and MultiPolygons [[[lat,lng],...], [[lat,lng],...]]"),
-            "images": fields.List(fields.String, description="List of image URLs"),
+            "images": fields.Raw(
+                description="Can be images URLs separated by comma or a List of URL strings", 
+                example=["http://url1.com", "http://url2.com"]
+            ),
             "status": NullableString(description="Resource status", skip_none=True),
             "created_at": NullableDatetime(description="Creation date", skip_none=True),
             "updated_at": NullableDatetime(description="Last update date", skip_none=True),
@@ -468,7 +489,10 @@ class TouristResourceDTO:
             "description_en": NullableString(description="Description in English"),
             "description_es": NullableString(description="Description in Spanish"),
             "description_ar": NullableString(description="Description in Arabic"),
-            "images": fields.List(fields.String, description="List of image URLs"),
+            "images": fields.Raw(
+                description="Can be images URLs separated by comma or a List of URL strings", 
+                example=["http://url1.com", "http://url2.com"]
+            ),
             "document_type": NullableString(description="Document type"),
             "intensity": NullableString(description="Intensity"),
             "district_municipality": NullableString(description="Arrondissement Commune"),
@@ -508,7 +532,10 @@ class ProjectBankDTO:
             "area": NullableString(description="Area"),
             "investment_amount": NullableString(description="Investment amount"),
             "archived_on": NullableDatetime(description="Date of archivation"),
-            "images": fields.List(fields.String, description="List of image URLs"),
+            "images": fields.Raw(
+                description="Can be images URLs separated by comma or a List of URL strings", 
+                example=["http://url1.com", "http://url2.com"]
+            ),
             "status": NullableString(description="Resource status", skip_none=True),
             "created_at": NullableDatetime(description="Creation date", skip_none=True),
             "updated_at": NullableDatetime(description="Last update date", skip_none=True),
@@ -552,7 +579,10 @@ class MarketplaceDTO:
             "description_es": NullableString(description="Description in Spanish"),
             "document_type": NullableString(description="Document type"),
             "archived_on": NullableDatetime(description="Date of archivation"),
-            "images": fields.List(fields.String, description="List of image URLs"),
+            "images": fields.Raw(
+                description="Can be images URLs separated by comma or a List of URL strings", 
+                example=["http://url1.com", "http://url2.com"]
+            ),
             "status": NullableString(description="Resource status", skip_none=True),
             "created_at": NullableDatetime(description="Creation date", skip_none=True),
             "updated_at": NullableDatetime(description="Last update date", skip_none=True),
@@ -585,7 +615,10 @@ class TourismOfferDTO:
             "direct_jobs": NullableInteger(description="Direct jobs"),
             "intensity": NullableInteger(description="Intensity"),
             "archived_on": NullableDatetime(description="Date of archivation"),
-            "images": fields.List(fields.String, description="List of image URLs"),
+            "images": fields.Raw(
+                description="Can be images URLs separated by comma or a List of URL strings", 
+                example=["http://url1.com", "http://url2.com"]
+            ),
             "status": NullableString(description="Resource status", skip_none=True),
             "created_at": NullableDatetime(description="Creation date", skip_none=True),
             "updated_at": NullableDatetime(description="Last update date", skip_none=True),
@@ -618,7 +651,10 @@ class TourismInvestmentDTO:
             "direct_jobs": NullableInteger(description="Direct jobs"),
             "intensity": NullableInteger(description="Intensity"),
             "archived_on": NullableDatetime(description="Date of archivation"),
-            "images": fields.List(fields.String, description="List of image URLs"),
+            "images": fields.Raw(
+                description="Can be images URLs separated by comma or a List of URL strings", 
+                example=["http://url1.com", "http://url2.com"]
+            ),
             "status": NullableString(description="Resource status", skip_none=True),
             "created_at": NullableDatetime(description="Creation date", skip_none=True),
             "updated_at": NullableDatetime(description="Last update date", skip_none=True),
