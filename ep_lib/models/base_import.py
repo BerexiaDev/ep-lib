@@ -19,6 +19,7 @@ class BaseImport(Document, MinioUtilities):
     JSON_ARRAY_FIELDS = [] 
     INT_FIELDS = [] 
     FLOAT_FIELDS = ["latitude", "longitude"]
+    is_moovapps_synced = False
     
 
     def __init__(self, **kwargs):
@@ -100,7 +101,7 @@ class BaseImport(Document, MinioUtilities):
         return record.get("document_type")
 
     @classmethod
-    def insert_from_df(cls, df: pd.DataFrame, drop_collection=True):
+    def insert_from_df(cls, df: pd.DataFrame, drop_collection=True, is_from_moovapps=False):
         """
         Master insertion method.
         """
@@ -133,6 +134,9 @@ class BaseImport(Document, MinioUtilities):
                 d_type = cls._determine_doc_type(rec)
                 if d_type:
                     rec["document_type"] = d_type
+                
+                # if from moovapps, set is_from_moovapps flag to True else False
+                rec["is_moovapps_synced"] = bool(is_from_moovapps)
 
                 records.append(rec)
 

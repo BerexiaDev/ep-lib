@@ -49,5 +49,5 @@ class AccommodationOpportunities(BaseImport):
     created_at = None
 
     @classmethod
-    def insert_opportunites_hebergement_df(cls, df, drop_collection=True):
-        cls.insert_from_df(df, drop_collection)
+    def insert_opportunites_hebergement_df(cls, df, drop_collection=True, is_from_moovapps=False):
+        cls.insert_from_df(df, drop_collection, is_from_moovapps)
