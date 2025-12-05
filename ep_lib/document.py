@@ -48,6 +48,25 @@ class Document:
         self.from_dict(result)
         return self
 
+    def update(self, modifier: Dict, **kwargs):
+        """
+        Updates the current document in the database using a MongoDB modifier.
+        Example: doc.update({"$set": {"status": "archived"}})
+        """
+        if not self._id:
+            logger.warning("Cannot update a document that hasn't been saved (no _id).")
+            return None
+            
+        return self.db(**kwargs).update_one({'_id': self._id}, modifier)
+
+    @classmethod
+    def update_many(cls, query: Dict, modifier: Dict, **kwargs):
+        """
+        Updates multiple documents matching the query.
+        Example: Document.update_many({"status": "pending"}, {"$set": {"status": "done"}})
+        """
+        return cls().db(**kwargs).update_many(query, modifier)
+
     def delete(self, query=None, **kwargs):
         if self.id:
             if not query:
