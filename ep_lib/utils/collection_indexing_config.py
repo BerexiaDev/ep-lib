@@ -16,7 +16,7 @@ from ep_lib.services.qdrant_casting_service import (
 )
 
 COLLECTION_CONFIG_MAP = {
-    MongoCollectionsEnum.TOURIST_PRODUCTS: {
+    MongoCollectionsEnum.TOURIST_PRODUCTS.value: {
         "collection_name": TouristProduct,
         "schema_name": "POI",
         "cast_to_weaviate_poi": cast_tourist_product_to_weaviate_poi,
@@ -24,7 +24,7 @@ COLLECTION_CONFIG_MAP = {
         "is_valid_string": ["title", "city"],
         "safe_str_clean": ["cid", "type_of_classification", "region", "title", "city"]
     },
-    MongoCollectionsEnum.RESTAURANT_PRODUCTS: {
+    MongoCollectionsEnum.RESTAURANT_PRODUCTS.value: {
         "collection_name": RestaurantProducts,
         "schema_name": "POI",
         "cast_to_weaviate_poi": cast_restaurant_product_to_weaviate_poi,
@@ -32,7 +32,7 @@ COLLECTION_CONFIG_MAP = {
         "is_valid_string": ["title", "city"],
         "safe_str_clean": ["cid", "type_of_classification", "fork_rating", "region", "title", "city"]
     },
-    MongoCollectionsEnum.TOURIST_RESOURCES: {
+    MongoCollectionsEnum.TOURIST_RESOURCES.value: {
         "collection_name": TouristResources,
         "schema_name": "POI",
         "cast_to_weaviate_poi": cast_tourist_resource_to_weaviate_poi,
@@ -40,7 +40,7 @@ COLLECTION_CONFIG_MAP = {
         "is_valid_string": ["title", "city"],
         "safe_str_clean": ["cid", "type_of_classification", "region", "title", "city", "intensity"]
     },
-    MongoCollectionsEnum.ACCOMMODATION_OPPORTUNITIES: {
+    MongoCollectionsEnum.ACCOMMODATION_OPPORTUNITIES.value: {
         "collection_name": AccommodationOpportunities,
         "schema_name": "INVESTMENT",
         "cast_to_weaviate_poi": cast_accommodation_opportunity_to_weaviate_investment,
@@ -54,7 +54,7 @@ COLLECTION_CONFIG_MAP = {
             "document_type", "urban_planning_status", "asset_status"
         ]
     },
-    MongoCollectionsEnum.LAND_OPPORTUNITIES: {
+    MongoCollectionsEnum.LAND_OPPORTUNITIES.value: {
         "collection_name": LandOpportunities,
         "schema_name": "INVESTMENT",
         "cast_to_weaviate_poi": cast_land_opportunity_to_weaviate_investment,
@@ -68,7 +68,7 @@ COLLECTION_CONFIG_MAP = {
             "environmental_constraints", "document_type", "urban_planning_status"
         ]
     },
-    MongoCollectionsEnum.LAND_RESOURCES: {
+    MongoCollectionsEnum.LAND_RESOURCES.value: {
         "collection_name": LandResources,
         "schema_name": "LAND_RESOURCES",
         "cast_to_weaviate_poi": cast_land_resources_to_weaviate_investment,
