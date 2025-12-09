@@ -1,13 +1,5 @@
 from enum import Enum
 
-class StatutS2I(Enum):
-    ACTIF = "ACTIF"
-    ARCHIVE = "ARCHIVE"
-    PENDING_MOOVAPS = "PENDING_MOOVAPS"
-    PENDING_E_PRODUITS = "PENDING_E_PRODUITS"
-    REJETE_MOOVAPS = "REJETE_MOOVAPS"
-    REJETE_E_PRODUITS = "REJETE_E_PRODUITS"
-
 class TicketingStatusEnum(Enum):
     """Generic status enum for all ticketing sections (Contact, Etudes Concepte, etc.)"""
     IN_PROGRESS = "IN_PROGRESS"
