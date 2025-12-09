@@ -12,7 +12,7 @@ from ep_lib.models.tourist_resource  import TouristResources
 from ep_lib.models.marketplace  import Marketplace
 from ep_lib.models.tourism_investment  import TourismInvestment
 from ep_lib.models.tourism_offer  import TourismOffer
-from ep_lib.services.weviate_service import (
+from ep_lib.services.qdrant_casting_service import (
     cast_tourist_product_to_weaviate_poi,
     cast_restaurant_product_to_weaviate_poi,
     cast_tourist_resource_to_weaviate_poi,
