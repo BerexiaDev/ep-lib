@@ -30,10 +30,17 @@ class BaseImport(Document, MinioUtilities):
 
     @classmethod
     def process_string_fields(cls, record: dict) -> dict:
-        """Cleans string fields by stripping whitespace and handling empty strings."""
+        """Cleans string fields, handling floats that look like integers."""
         for field in cls.STRING_FIELDS:
             if field in record and record[field] is not None:
-                record[field] = str(record[field]).strip()
+                val = record[field]
+                
+                # Check if it is a float that represents a whole number (e.g., 932.0)
+                if isinstance(val, float) and val.is_integer():
+                    record[field] = str(int(val))
+                else:
+                    record[field] = str(val).strip()
+                    
         return record
 
     @classmethod
