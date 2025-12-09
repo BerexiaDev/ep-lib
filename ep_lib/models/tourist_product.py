@@ -6,6 +6,8 @@ from ep_lib.utils.enums import MongoCollectionsEnum
 class TouristProduct(BaseImport):
     __TABLE__ = MongoCollectionsEnum.TOURIST_PRODUCTS.value
     IMAGE_BUCKET = "tourist-products"
+    STRING_FIELDS = ["sip_id"]
+    INT_FIELDS = ["opening_date"]
     
     sip_id = None
     title_fr = None

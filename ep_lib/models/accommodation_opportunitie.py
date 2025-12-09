@@ -8,6 +8,7 @@ class AccommodationOpportunities(BaseImport):
     __TABLE__ = MongoCollectionsEnum.ACCOMMODATION_OPPORTUNITIES.value
     IMAGE_BUCKET = "accommodation-opportunities"
     DOC_TYPE_ENUM = DocTypeEnum.OPPORTUNITE_HEBERGEMENT.value
+    STRING_FIELDS = ["opportunity_id"]
 
     opportunity_id = None
     opportunity_type = None

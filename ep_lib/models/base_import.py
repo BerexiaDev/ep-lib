@@ -19,6 +19,7 @@ class BaseImport(Document, MinioUtilities):
     JSON_ARRAY_FIELDS = [] 
     INT_FIELDS = [] 
     FLOAT_FIELDS = ["latitude", "longitude"]
+    STRING_FIELDS = []
     is_moovapps_synced = False
     
 
@@ -26,6 +27,14 @@ class BaseImport(Document, MinioUtilities):
         Document.__init__(self, **kwargs)
         if self.IMAGE_BUCKET:
             MinioUtilities.__init__(self, image_bucket=self.IMAGE_BUCKET, **kwargs)
+
+    @classmethod
+    def process_string_fields(cls, record: dict) -> dict:
+        """Cleans string fields by stripping whitespace and handling empty strings."""
+        for field in cls.STRING_FIELDS:
+            if field in record and record[field] is not None:
+                record[field] = str(record[field]).strip()
+        return record
 
     @classmethod
     def _process_arrays(cls, record: dict, idx: int) -> dict:
@@ -129,6 +138,7 @@ class BaseImport(Document, MinioUtilities):
                 rec = cls._process_floats(rec)
                 rec = cls._process_arrays(rec, idx)
                 rec = cls._process_integers(rec)
+                rec = cls.process_string_fields(rec)
 
                 # set Document Type
                 d_type = cls._determine_doc_type(rec)

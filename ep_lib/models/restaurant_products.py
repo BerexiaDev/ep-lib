@@ -8,6 +8,7 @@ class RestaurantProducts(BaseImport):
     IMAGE_BUCKET = "restaurant-products"
     DOC_TYPE_ENUM = DocTypeEnum.RESTAURATION_PRODUCT.value
     INT_FIELDS = ["opening_date"]
+    STRING_FIELDS = ["sip_id"]
 
     sip_id = None
     title_fr = None

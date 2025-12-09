@@ -6,6 +6,7 @@ class Marketplace(BaseImport):
     __TABLE__ = MongoCollectionsEnum.MARKETPLACE.value
     IMAGE_BUCKET = "marketplace"
     DOC_TYPE_ENUM = DocTypeEnum.MARKETPLACE.value
+    STRING_FIELDS = ["sip_id"]
 
     # Basic identification
     sip_id = None

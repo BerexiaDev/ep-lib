@@ -4,6 +4,7 @@ from ep_lib.utils.enums import MongoCollectionsEnum
 class ProjectBank(BaseImport):
     __TABLE__ = MongoCollectionsEnum.PROJECT_BANK.value
     IMAGE_BUCKET = "project-bank"
+    STRING_FIELDS = ["project_id"]
 
 
     project_id = None

@@ -7,6 +7,7 @@ class TouristPackages(BaseImport):
     __TABLE__ = MongoCollectionsEnum.TOURIST_PACKAGES.value
     IMAGE_BUCKET = "tourist-packages"
     DOC_TYPE_ENUM = DocTypeEnum.TOURIST_PACKAGE.value
+    STRING_FIELDS = ["sip_id", "package_id", "circuit_id", "resource_id", "product_id", "restaurant_id"]
 
     sip_id = None
     package_id = None

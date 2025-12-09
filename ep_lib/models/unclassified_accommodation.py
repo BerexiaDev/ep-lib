@@ -6,6 +6,7 @@ class UnclassifiedAccommodation(BaseImport):
     __TABLE__ = MongoCollectionsEnum.UNCLASSIFIED_ACCOMMODATION.value
     IMAGE_BUCKET = "unclassified-accommodation"
     INT_FIELDS = ["opening_date"]
+    STRING_FIELDS = ["sip_id"]
 
     sip_id = None
     title_fr = None
