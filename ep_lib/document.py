@@ -160,11 +160,11 @@ class Document:
         return result.inserted_ids
 
     @classmethod
-    def bulk_upsert(cls, records: List[Dict], create_date_field="created_at", update_date_field="updated_at"):
+    def bulk_upsert(cls, records: List[Dict], primary_key_field="sip_id", create_date_field="created_at", update_date_field="updated_at"):
         """
-        Upsert records based strictly on '_id'.
-        - If '_id' exists in record -> Update that specific doc.
-        - If '_id' is missing -> Generate new '_id' and Insert.
+        Upsert records based strictly on '<primary_key_field>'.
+        - If '<primary_key_field>' exists in record -> Update that specific doc.
+        - If '<primary_key_field>' is missing -> Generate new '<primary_key_field>' and Insert.
         - Automatically handles created/updated timestamps.
         """
         if not records:
@@ -178,7 +178,7 @@ class Document:
             rec_data = rec.copy()
             
             # 1. Identify the ID
-            doc_id = rec_data.pop('_id', None)
+            doc_id = rec_data.pop(primary_key_field, None)
             
             if not doc_id:
                 doc_id = generate_id() # Generate a new ID if none provided
@@ -201,7 +201,7 @@ class Document:
                 insert_payload[create_date_field] = now
 
             op = UpdateOne(
-                filter={"_id": doc_id},
+                filter={primary_key_field: doc_id},
                 update={
                     "$set": set_payload,
                     "$setOnInsert": insert_payload
