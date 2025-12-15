@@ -164,8 +164,10 @@ class BaseImport(Document, MinioUtilities):
             if drop_collection:
                 cls.drop()
                 logger.info(f"[{cls.__TABLE__}] Collection dropped.")
+            
+            primary_key_field = "sip_id" if is_from_moovapps else "_id"
 
-            cls.bulk_upsert(records)
+            cls.bulk_upsert(records, primary_key_field=primary_key_field)
             logger.success(f"[{cls.__TABLE__}] Successfully inserted {len(records)} records.")
         
         except Exception as e:
