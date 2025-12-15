@@ -147,7 +147,7 @@ class TouristProductDTO:
         "TouristProduct",
         {
             "id": NullableString(description="Tourist Product ID"),
-            "sip_id": NullableString(description="SIP ID"),
+            "sip_id": NullableString(description="SMIT ID"),
             "title_fr": NullableString(description="Title in French"),
             "title_en": NullableString(description="Title in English"),
             "title_es": NullableString(description="Title in Spanish"),
@@ -190,7 +190,7 @@ class RestaurantProductDTO:
         "Restaurant Product",
         {
             "id": NullableString(description="Restaurant Product ID"),
-            "sip_id": NullableString(description="SIP ID"),
+            "sip_id": NullableString(description="SMIT ID"),
             "title_fr": NullableString(description="Title in French"),
             "title_en": NullableString(description="Title in English"),
             "title_es": NullableString(description="Title in Spanish"),
@@ -230,7 +230,7 @@ class UnclassifiedAccommodationDTO:
         "Unclassified Accommodation",
         {
             "id": NullableString(description="Unclassified Accommodation ID"),
-            "sip_id": NullableString(description="SIP ID"),
+            "sip_id": NullableString(description="SMIT ID"),
             "title_fr": NullableString(description="Title in French"),
             "title_en": NullableString(description="Title in English"),
             "title_es": NullableString(description="Title in Spanish"),
@@ -283,7 +283,7 @@ class TouristPackageDTO:
         "Tourist Package",
         {
             "id": NullableString(description="Tourist Package ID"),
-            "sip_id": NullableString(description="MoovappsTourist Package ID"),
+            "sip_id": NullableString(description="SMIT Package ID"),
             "package_id": NullableString(description="Package ID"),
             "resource_id": NullableString(description="Resource ID"),
             "tourist_resource": NullableString(description="Tourist resource"),
@@ -329,7 +329,7 @@ class AccommodationOpportunityDTO:
         "Accommodation Opportunity",
         {
             "id": NullableString(description="Accommodation Opportunity ID"),
-            "opportunity_id": NullableString(description="Opportunity ID"),
+            "sip_id": NullableString(description="SMIT Opportunity ID"),
             "opportunity_type": NullableString(description="Opportunity type"),
             "investment_type": NullableString(description="Investment type"),
             "management_type": NullableString(description="Management type"),
@@ -379,7 +379,7 @@ class LandOpportunityDTO:
         "Land Opportunity",
         {
             "id": NullableString(description="Land Opportunity ID"),
-            "opportunity_id": NullableString(description="Opportunity ID"),
+            "sip_id": NullableString(description="SMIT Opportunity ID"),
             "opportunity_type": NullableString(description="Opportunity type"),
             "investment_type": NullableString(description="Investment type"),
             "management_type": NullableString(description="Management type"),
@@ -433,7 +433,7 @@ class LandResourceDTO:
         "Land Resource",
         {
             "id": NullableString(description="Record ID (_id)"),
-            "resource_id": NullableString(description="Resource ID"),
+            "sip_id": NullableString(description="SMIT Resource ID"),
             "region": NullableString(description="Region"),
             "city": NullableString(description="City"),
             "district_municipality": NullableString(description="District / Municipality"),
@@ -475,7 +475,7 @@ class TouristResourceDTO:
         "Tourist Resource",
         {
             "id": NullableString(description="Record ID (_id)"),
-            "resource_id": NullableString(description="Resource ID"),
+            "sip_id": NullableString(description="SMIT Resource ID"),
             "title_fr": NullableString(description="Title in French"),
             "title_en": NullableString(description="Title in English"),
             "title_es": NullableString(description="Title in Spanish"),
@@ -510,7 +510,7 @@ class ProjectBankDTO:
         "Project Bank",
         {
             "id": NullableString(description="Record ID (_id)"),
-            "project_id": NullableString(description="Project ID"),
+            "sip_id": NullableString(description="SMIT Project ID"),
             "opportunity_type": NullableString(description="Opportunity type"),
             "title_fr": NullableString(description="Title in French"),
             "title_en": NullableString(description="Title in English"),
@@ -549,7 +549,7 @@ class MarketplaceDTO:
         "Marketplace",
         {
             "id": NullableString(description="Record ID (_id)"),
-            "sip_id": NullableString(description="Moovapps Marketplace ID"),
+            "sip_id": NullableString(description="SMIT Marketplace ID"),
             "opportunity_type": NullableString(description="Opportunity type"),
             "investment_type": NullableString(description="Investment type"),
             "management_type": NullableString(description="Management type"),

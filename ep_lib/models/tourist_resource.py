@@ -6,9 +6,10 @@ class TouristResources(BaseImport):
     __TABLE__ = MongoCollectionsEnum.TOURIST_RESOURCES.value
     IMAGE_BUCKET = "tourism-resources"
     DOC_TYPE_ENUM = DocTypeEnum.RESSOURCE_TOURISTIQUE.value
+    STRING_FIELDS = ["sip_id"]
 
 
-    resource_id = None
+    sip_id = None
     title_fr = None
     title_ar = None
     title_en = None

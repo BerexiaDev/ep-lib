@@ -47,7 +47,7 @@ COLLECTION_CONFIG_MAP = {
         "remove_empty_properties": ["cid", "title_fr", "region"],
         "is_valid_string": ["poi_type", "title_fr", "region"],
         "safe_str_clean": [
-            "cid", "poi_type", "opportunity_id", "title_fr", "title_en", "title_es",
+            "cid", "poi_type", "sip_id", "title_fr", "title_en", "title_es",
             "opportunity_type", "investment_type", "management_type", "asset_type",
             "category", "classification_type", "branch", "region", "city",
             "district_municipality", "availability", "accessibility", "transfer_conditions",
@@ -61,7 +61,7 @@ COLLECTION_CONFIG_MAP = {
         "remove_empty_properties": ["cid", "title_fr", "region"],
         "is_valid_string": ["poi_type", "title_fr", "region"],
         "safe_str_clean": [
-            "cid", "poi_type", "opportunity_id", "title_fr", "title_en", "title_es",
+            "cid", "poi_type", "sip_id", "title_fr", "title_en", "title_es",
             "opportunity_type", "investment_type", "management_type", "asset_type",
             "category", "classification_type", "branch", "region", "city",
             "availability", "accessibility", "transfer_conditions", "site_topography",
@@ -72,8 +72,8 @@ COLLECTION_CONFIG_MAP = {
         "collection_name": LandResources,
         "schema_name": "LAND_RESOURCES",
         "cast_to_weaviate_poi": cast_land_resources_to_weaviate_investment,
-        "remove_empty_properties": ["cid", "resource_id", "region"],
-        "is_valid_string": ["poi_type", "resource_id", "region"],
+        "remove_empty_properties": ["cid", "sip_id", "region"],
+        "is_valid_string": ["poi_type", "sip_id", "region"],
         "safe_str_clean": [
             "cid", "poi_type", "title_fr", "title_en", "title_es", "land_type",
             "land_regime", "branch", "region", "city", "district_municipality",

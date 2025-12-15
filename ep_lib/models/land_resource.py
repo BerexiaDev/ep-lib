@@ -7,9 +7,9 @@ class LandResources(BaseImport):
     IMAGE_BUCKET = "land-resources"
     DOC_TYPE_ENUM = DocTypeEnum.RESSOURCE_FONCIERE.value
     JSON_ARRAY_FIELDS = ["polygone"]
-    STRING_FIELDS = ["resource_id"]
+    STRING_FIELDS = ["sip_id"]
 
-    resource_id = None
+    sip_id = None
     region = None
     city = None
     district_municipality = None

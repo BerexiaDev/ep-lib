@@ -125,7 +125,7 @@ EXCEL_TO_MONGO_FIELD_MAPPINGS = {
     },
     MongoCollectionsEnum.ACCOMMODATION_OPPORTUNITIES.value: {
         "id": "_id",
-        "sip_id": "opportunity_id",
+        "sip_id": "sip_id",
         "type_opportunite": "opportunity_type",
         "type_investissement": "investment_type",
         "type_gestion": "management_type",
@@ -162,7 +162,7 @@ EXCEL_TO_MONGO_FIELD_MAPPINGS = {
     },
     MongoCollectionsEnum.LAND_OPPORTUNITIES.value: {
         "id": "_id",
-        "sip_id": "opportunity_id",
+        "sip_id": "sip_id",
         "type_opportunite": "opportunity_type",
         "type_investissement": "investment_type",
         "type_gestion": "management_type",
@@ -203,7 +203,7 @@ EXCEL_TO_MONGO_FIELD_MAPPINGS = {
     },
     MongoCollectionsEnum.PROJECT_BANK.value: {
         "id": "_id",
-        "sip_id": "project_id",
+        "sip_id": "sip_id",
         "type_opportunite": "opportunity_type",
         "titre": "title_fr",
         "type_actif": "asset_type",
@@ -232,7 +232,7 @@ EXCEL_TO_MONGO_FIELD_MAPPINGS = {
     },
     MongoCollectionsEnum.LAND_RESOURCES.value: {
         "id": "_id",
-        "sip_id": "resource_id",
+        "sip_id": "sip_id",
         "region": "region",
         "prefecture_province": "city",
         "arrondissement_commune": "district_municipality",
@@ -262,7 +262,7 @@ EXCEL_TO_MONGO_FIELD_MAPPINGS = {
     },
     MongoCollectionsEnum.TOURIST_RESOURCES.value: {
         "id": "_id",
-        "sip_id": "resource_id",
+        "sip_id": "sip_id",
         "titre": "title_fr",
         "titre_ar": "title_ar",
         "titre_en": "title_en",

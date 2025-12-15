@@ -198,7 +198,7 @@ def cast_accommodation_opportunity_to_weaviate_investment(
 
     poi_type = "investment_accommodation"
 
-    cid = opportunity.get("_id") or opportunity.get("opportunity_id")
+    cid = opportunity.get("_id") or opportunity.get("sip_id")
     cid = str(cid) if cid is not None else None
 
     return {
@@ -207,7 +207,7 @@ def cast_accommodation_opportunity_to_weaviate_investment(
         "title_fr": clean_text(opportunity.get("title_fr")),
         "title_en": clean_text(opportunity.get("title_en")),
         "title_es": clean_text(opportunity.get("title_es")),
-        "opportunity_id": clean_text(opportunity.get("opportunity_id")),
+        "sip_id": clean_text(opportunity.get("sip_id")),
         "opportunity_type": clean_text(opportunity.get("opportunity_type")),
         "investment_type": clean_text(opportunity.get("investment_type")),
         "management_type": clean_text(opportunity.get("management_type")),
@@ -280,7 +280,7 @@ def cast_land_opportunity_to_weaviate_investment(opportunity: dict) -> dict:
 
     poi_type = "investment_land"
 
-    cid = opportunity.get("_id") or opportunity.get("opportunity_id")
+    cid = opportunity.get("_id") or opportunity.get("sip_id")
     cid = str(cid) if cid is not None else None
 
     return {
@@ -289,7 +289,7 @@ def cast_land_opportunity_to_weaviate_investment(opportunity: dict) -> dict:
         "title_fr": clean_text(opportunity.get("title_fr")),
         "title_en": clean_text(opportunity.get("title_en")),
         "title_es": clean_text(opportunity.get("title_es")),
-        "opportunity_id": clean_text(opportunity.get("opportunity_id")),
+        "sip_id": clean_text(opportunity.get("sip_id")),
         "opportunity_type": clean_text(opportunity.get("opportunity_type")),
         "investment_type": clean_text(opportunity.get("investment_type")),
         "management_type": clean_text(opportunity.get("management_type")),
@@ -354,7 +354,7 @@ def cast_land_resources_to_weaviate_investment(opportunity: dict) -> dict:
 
     poi_type = "land_resource"
 
-    cid = opportunity.get("_id") or opportunity.get("resource_id")
+    cid = opportunity.get("_id") or opportunity.get("sip_id")
     cid = str(cid) if cid is not None else None
     direction = REGION_TO_DIRECTION.get(opportunity.get("region")) or ""
 

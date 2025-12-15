@@ -7,9 +7,9 @@ class LandOpportunities(BaseImport):
     IMAGE_BUCKET = "land-opportunities"
     DOC_TYPE_ENUM = DocTypeEnum.OPPORTUNITE_FONCIER.value
     JSON_ARRAY_FIELDS = ["polygone"]
-    STRING_FIELDS = ["opportunity_id"]
+    STRING_FIELDS = ["sip_id"]
 
-    opportunity_id = None
+    sip_id = None
     opportunity_type = None
     investment_type = None
     management_type = None
