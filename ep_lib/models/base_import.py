@@ -1,4 +1,5 @@
 import json
+from typing import Dict
 import pandas as pd
 from loguru import logger
 from ep_lib.utils.strings import clean_value
@@ -20,13 +21,45 @@ class BaseImport(Document, MinioUtilities):
     INT_FIELDS = [] 
     FLOAT_FIELDS = ["latitude", "longitude"]
     STRING_FIELDS = []
-    is_moovapps_synced = False
+    sync_status: Dict[str, bool]
+
+
     
 
     def __init__(self, **kwargs):
         Document.__init__(self, **kwargs)
         if self.IMAGE_BUCKET:
             MinioUtilities.__init__(self, image_bucket=self.IMAGE_BUCKET, **kwargs)
+
+    
+    def set_sync_qdrant_status(self, status: bool):
+        """
+        Update Qdrant sync status for this document.
+
+        Args:
+            status: True if synced successfully, False otherwise.
+        """
+
+        if not hasattr(self, "sync_status") or not isinstance(self.sync_status, dict):
+            self.sync_status = {}
+        
+        self.sync_status["qdrant"] = status
+
+    
+    def set_sync_moovapps_status(self, status: bool):
+        """
+        Update Moovapps sync status for this document.
+
+        Args:
+            status: True if synced successfully, False otherwise.
+        """
+        if not hasattr(self, "sync_status") or not isinstance(self.sync_status, dict):
+            self.sync_status = {}
+        
+        self.sync_status["moovapps"] = status
+
+
+
 
     @classmethod
     def process_string_fields(cls, record: dict) -> dict:
@@ -152,8 +185,8 @@ class BaseImport(Document, MinioUtilities):
                 if d_type:
                     rec["document_type"] = d_type
                 
-                # if from moovapps, set is_from_moovapps flag to True else False
-                rec["is_moovapps_synced"] = bool(is_from_moovapps)
+                # if from moovapps, set moovapps sync status to True else False
+                rec["sync_status"] = {"moovapps": is_from_moovapps, "qdrant": False}
 
                 records.append(rec)
 

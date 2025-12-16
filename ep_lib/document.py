@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import Any, List, Dict
 from app.main import mongo
 from ep_lib.utils.strings import generate_id
 from loguru import logger
@@ -58,6 +58,28 @@ class Document:
             return None
             
         return self.db(**kwargs).update_one({'_id': self._id}, modifier)
+
+    @classmethod
+    def update_by_filter(cls, filter: Dict[str, Any], modifier: Dict[str, Any], **kwargs):
+        """
+        Update one document matching the given filter using a MongoDB modifier.
+
+        Example:
+            Model.update_by_filter(
+                {"_id": doc_id},
+                {"$set": {"sync_status.qdrant": True}}
+            )
+        """
+        if not isinstance(filter, dict) or not filter:
+            logger.warning("update_by_filter called with empty or invalid filter")
+            return None
+
+        if not isinstance(modifier, dict) or not modifier:
+            logger.warning("update_by_filter called with empty or invalid modifier")
+            return None
+
+        return cls.db(**kwargs).update_one(filter, modifier)
+        
 
     @classmethod
     def update_many(cls, query: Dict, modifier: Dict, **kwargs):
