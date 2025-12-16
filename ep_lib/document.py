@@ -184,26 +184,43 @@ class Document:
     @classmethod
     def bulk_upsert(cls, records: List[Dict], primary_key_field="sip_id", create_date_field="created_at", update_date_field="updated_at"):
         """
-        Upsert records based strictly on '<primary_key_field>'.
-        - If '<primary_key_field>' exists in record -> Update that specific doc.
-        - If '<primary_key_field>' is missing -> Generate new '<primary_key_field>' and Insert.
-        - Automatically handles created/updated timestamps.
+        Universal Upsert Logic:
+        1. Check 'primary_key_field' (PK):
+        - If PK is '_id' and missing in record -> Generate new '_id' (Treat as Insert).
+        - If PK is custom (e.g. 'sip_id') and missing -> SKIP record.
+        2. _id Generation:
+        - If PK is custom: '_id' is generated in $setOnInsert.
+        - If PK is '_id': The generated value is used in the Filter (effectively setting it).
         """
         if not records:
             return
 
         operations = []
-        if create_date_field or update_date_field:
-            now = get_now_utc()
+        now = get_now_utc() if (create_date_field or update_date_field) else None
 
         for rec in records:
             rec_data = rec.copy()
             
-            # 1. Identify the ID
-            doc_id = rec_data.pop(primary_key_field, None)
+            # 1. Determine Primary Key Value
+            doc_pk_value = rec_data.get(primary_key_field)
             
-            if not doc_id:
-                doc_id = generate_id() # Generate a new ID if none provided
+            # LOGIC SPLIT:
+            if primary_key_field == "_id":
+                # Case A: PK is _id. 
+                # If missing, we generate it (Pure Insert). 
+                # If present, we use it (Update).
+                if not doc_pk_value:
+                    doc_pk_value = generate_id()
+            else:
+                # Case B: PK is custom (e.g., sip_id).
+                # If missing, we strictly SKIP.
+                if not doc_pk_value:
+                    continue
+
+            # 2. Cleanup Data
+            # Remove _id and PK from the payload to prevent duplication/errors in $set
+            rec_data.pop("_id", None) 
+            rec_data.pop(primary_key_field, None)
             
             # Remove any existing creation/update timestamps so the upsert can regenerate them cleanly
             if create_date_field in rec_data:
@@ -211,19 +228,27 @@ class Document:
             
             if update_date_field in rec_data:
                 del rec_data[update_date_field]
-            
-            # 2. Prepare the $set payload (Updates applied to BOTH new and existing)
+
+            # 3. Prepare $set (Updates for everyone)
             set_payload = rec_data
             if update_date_field:
                 set_payload[update_date_field] = now
 
-            # 3. Prepare the $setOnInsert payload (Applied ONLY to new inserts)
+            # 4. Prepare $setOnInsert (Insert-only defaults)
             insert_payload = {}
+            
             if create_date_field:
                 insert_payload[create_date_field] = now
 
+            # SPECIAL HANDLING FOR _id GENERATION
+            # If the PK is NOT _id, we must generate an _id for the new doc here.
+            # (If the PK IS _id, the filter below handles the assignment automatically).
+            if primary_key_field != "_id":
+                insert_payload["_id"] = generate_id()
+
+            # 5. Build Operation
             op = UpdateOne(
-                filter={primary_key_field: doc_id},
+                filter={primary_key_field: doc_pk_value},
                 update={
                     "$set": set_payload,
                     "$setOnInsert": insert_payload
