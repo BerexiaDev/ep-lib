@@ -174,7 +174,7 @@ class BaseImport(Document, MinioUtilities):
                     rec[dst] = clean_value(row.get(src))
 
                 # dynamic Processing
-                rec = cls._process_multilingual(rec)
+                # rec = cls._process_multilingual(rec)
                 rec = cls._process_floats(rec)
                 rec = cls._process_arrays(rec, idx)
                 rec = cls._process_integers(rec)
