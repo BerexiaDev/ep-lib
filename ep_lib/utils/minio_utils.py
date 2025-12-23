@@ -1,20 +1,19 @@
 import io
+import mimetypes
 import os
+import time
 import uuid
-import mimetypes
 from datetime import timedelta
-import mimetypes
-import os
 from typing import Optional, Tuple
 from urllib.parse import urlparse, urlunparse
 
-from flask import current_app
+import urllib3
+
+from flask import current_app, has_app_context
 from loguru import logger
 from minio import Minio
 from minio.error import S3Error
 from werkzeug.utils import secure_filename
-
-
 # Allowed file extensions for uploads
 ALLOWED_EXTENSIONS = {
     "png",
@@ -46,6 +45,37 @@ def _normalize_endpoint(endpoint: str) -> Tuple[str, Optional[bool]]:
     return host, is_secure
 
 
+def _build_http_client():
+    """
+    Build a urllib3 client with reasonable timeouts and retries for MinIO operations.
+    """
+    timeout = urllib3.util.Timeout(connect=5.0, read=10.0)
+    retry_kwargs = {
+        "total": 2,
+        "connect": 2,
+        "read": 2,
+        "backoff_factor": 0.5,
+        "status_forcelist": [500, 502, 503, 504],
+    }
+    allowed_methods_key = "allowed_methods" if hasattr(urllib3.util.retry.Retry.DEFAULT, "allowed_methods") else "method_whitelist"
+    retry_kwargs[allowed_methods_key] = ["HEAD", "GET", "PUT", "POST", "DELETE"]
+    retries = urllib3.util.retry.Retry(**retry_kwargs)
+    return urllib3.PoolManager(timeout=timeout, retries=retries)
+
+
+def _client_endpoint(client: Minio) -> Optional[str]:
+    """
+    Extract the configured endpoint URL from a MinIO client for logging.
+    """
+    try:
+        base_url = getattr(client, "_base_url", None)
+        if base_url and hasattr(base_url, "_url"):
+            return base_url._url.geturl()
+    except Exception:  # noqa: BLE001
+        return None
+    return None
+
+
 def get_minio_client() -> Minio:
     """
     Build a MinIO client from the current Flask app configuration.
@@ -56,7 +86,8 @@ def get_minio_client() -> Minio:
 
     access_key = config.get("MINIO_ROOT_USER")
     secret_key = config.get("MINIO_ROOT_PASSWORD")
-    region = config.get("MINIO_REGION") or None
+    # Default MinIO region is us-east-1; setting it avoids extra network lookups during presign.
+    region = config.get("MINIO_REGION") or "us-east-1"
 
     if not access_key or not secret_key:
         raise RuntimeError("Both MINIO_ROOT_USER and MINIO_ROOT_PASSWORD must be configured.")
@@ -67,6 +98,7 @@ def get_minio_client() -> Minio:
         secret_key=secret_key,
         secure=secure,
         region=region,
+        http_client=_build_http_client(),
     )
 
 
@@ -94,19 +126,49 @@ def _resolve_endpoint(config):
     return endpoint, inferred_secure
 
 
-def ensure_bucket(client: Minio, bucket_name: str, region: Optional[str] = None) -> None:
+def ensure_bucket(client: Minio, bucket_name: str, region: Optional[str] = None, retries: int = 2, retry_delay: float = 0.5) -> None:
     """
-    Ensure the target bucket exists, create it if missing.
+    Ensure the target bucket exists, create it if missing. Retries transient failures.
     """
-    try:
-        if client.bucket_exists(bucket_name):
+    attempts = max(1, retries)
+    last_exc: Optional[Exception] = None
+    endpoint = _client_endpoint(client)
+
+    for attempt in range(1, attempts + 1):
+        attempt_logger = logger.bind(
+            bucket=bucket_name,
+            region=region,
+            endpoint=endpoint,
+            attempt=attempt,
+            attempts=attempts,
+        )
+        try:
+            if client.bucket_exists(bucket_name):
+                return
+            client.make_bucket(bucket_name, location=region) if region else client.make_bucket(bucket_name)
+            logger.info(f"Created MinIO bucket '{bucket_name}'.")
             return
-        client.make_bucket(bucket_name, location=region) if region else client.make_bucket(bucket_name)
-        logger.info(f"Created MinIO bucket '{bucket_name}'.")
-    except S3Error as exc:
-        if exc.code not in {"BucketAlreadyOwnedByYou", "BucketAlreadyExists"}:
-            raise
-        logger.debug(f"Bucket '{bucket_name}' already exists: {exc.code}")
+        except S3Error as exc:
+            last_exc = exc
+            if exc.code in {"BucketAlreadyOwnedByYou", "BucketAlreadyExists"}:
+                attempt_logger.debug(f"Bucket '{bucket_name}' already exists: {exc.code}")
+                return
+            if attempt >= attempts:
+                attempt_logger.warning(f"Failed to ensure bucket: {exc}")
+            else:
+                attempt_logger.debug(f"Bucket ensure failed, will retry: {exc}")
+        except Exception as exc:  # noqa: BLE001
+            last_exc = exc
+            if attempt >= attempts:
+                attempt_logger.warning(f"Unexpected error ensuring bucket: {exc}")
+            else:
+                attempt_logger.debug(f"Unexpected bucket ensure error, will retry: {exc}")
+
+        if attempt < attempts:
+            time.sleep(retry_delay)
+
+    if last_exc:
+        raise last_exc
 
 
 def upload_bytes(client: Minio, bucket: str, object_name: str, data: bytes, content_type: Optional[str] = None) -> None:
@@ -126,24 +188,105 @@ def upload_bytes(client: Minio, bucket: str, object_name: str, data: bytes, cont
     )
 
 
-def generate_presigned_url(bucket: str, object_name: str, expires_seconds: Optional[int] = None) -> str:
+def generate_presigned_url(
+    bucket: str, object_name: str, expires_seconds: Optional[int] = None, retries: int = 3, retry_delay: float = 0.5
+) -> str:
     """
     Generate a presigned GET URL for an object stored in MinIO.
+    Returns an empty string when required data is missing or MinIO is unreachable.
     """
-    client = get_minio_client()
-    ttl = expires_seconds or current_app.config.get("MINIO_PRESIGNED_TTL", 36000)
+    if not bucket or not object_name:
+        logger.warning("Missing bucket or object_name for presigned URL generation.")
+        return ""
+
+    if not has_app_context():
+        logger.warning("No Flask app context; skipping presigned URL generation.")
+        return ""
+
+    cfg = current_app.config
+    ttl = expires_seconds or cfg.get("MINIO_PRESIGNED_TTL", 36000)
     if ttl <= 0:
-        raise ValueError("Presigned URL expiry must be greater than zero seconds.")
+        logger.warning("Presigned URL expiry must be greater than zero seconds.")
+        return ""
+
+    endpoint = region = secure = None
+    try:
+        endpoint, inferred_secure = _resolve_endpoint(cfg)
+        region = cfg.get("MINIO_REGION") or "us-east-1"
+        secure = cfg.get("MINIO_SECURE", False) if inferred_secure is None else inferred_secure
+    except Exception as exc:  # noqa: BLE001
+        logger.error(f"Unable to resolve MinIO endpoint for presigned URL: {exc}")
+        return ""
 
     try:
-        presigned = client.get_presigned_url(
-            method="GET",
-            bucket_name=bucket,
-            object_name=object_name,
-            expires=timedelta(seconds=ttl),
+        client = get_minio_client()
+    except Exception as exc:  # noqa: BLE001
+        logger.bind(endpoint=endpoint, region=region, secure=secure).error(
+            f"Unable to initialize MinIO client for presigned URL: {exc}"
         )
-        public_base = current_app.config.get("MINIO_PUBLIC_URL")
-        if public_base:
+        return ""
+
+    attempts = max(1, retries)
+    presigned = ""
+    last_exc: Optional[Exception] = None
+
+    for attempt in range(1, attempts + 1):
+        attempt_logger = logger.bind(
+            bucket=bucket,
+            object_name=object_name,
+            endpoint=endpoint,
+            region=region,
+            secure=secure,
+            attempt=attempt,
+            attempts=attempts,
+        )
+        try:
+            presigned = client.get_presigned_url(
+                method="GET",
+                bucket_name=bucket,
+                object_name=object_name,
+                expires=timedelta(seconds=ttl),
+            )
+            break
+        except S3Error as exc:
+            last_exc = exc
+            if attempt >= attempts:
+                attempt_logger.warning(f"Failed to generate presigned URL: {exc}")
+            else:
+                attempt_logger.debug(f"Presigned URL attempt failed, will retry: {exc}")
+        except Exception as exc:  # noqa: BLE001
+            last_exc = exc
+            if attempt >= attempts:
+                attempt_logger.warning(f"Unexpected error while generating presigned URL: {exc}")
+            else:
+                attempt_logger.debug(f"Unexpected presign error, will retry: {exc}")
+
+        if attempt < attempts:
+            time.sleep(retry_delay)
+
+    if not presigned:
+        if last_exc:
+            logger.bind(
+                bucket=bucket,
+                object_name=object_name,
+                endpoint=endpoint,
+                region=region,
+                secure=secure,
+                attempts=attempts,
+            ).warning(f"Failed to generate presigned URL after {attempts} attempt(s): {last_exc}")
+        else:
+            logger.bind(
+                bucket=bucket,
+                object_name=object_name,
+                endpoint=endpoint,
+                region=region,
+                secure=secure,
+            ).warning("Received empty presigned URL.")
+        return ""
+
+    public_base = current_app.config.get("MINIO_PUBLIC_URL")
+    if public_base:
+        try:
             target = urlparse(public_base)
             netloc = target.netloc or target.path
             if netloc:
@@ -155,10 +298,10 @@ def generate_presigned_url(bucket: str, object_name: str, expires_seconds: Optio
                 presigned = urlunparse(parsed)
             else:
                 logger.warning(f"MINIO_PUBLIC_URL '{public_base}' is missing host information.")
-        return presigned
-    except S3Error as exc:
-        logger.error(f"Failed to generate presigned URL for '{bucket}/{object_name}': {exc}")
-        raise
+        except Exception as exc:  # noqa: BLE001
+            logger.warning(f"Failed to apply MINIO_PUBLIC_URL override: {exc}")
+
+    return presigned
 
 def allowed_file(filename):
     """Check if file extension is allowed"""
