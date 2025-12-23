@@ -1,12 +1,17 @@
-import pandas as pd
-from loguru import logger
-from util.enum import DocTypeEnum
-from ep_lib.document import Document
+from ep_lib.utils.enums import DocTypeEnum
+from ep_lib.models.base_import import BaseImport
+from ep_lib.utils.enums import MongoCollectionsEnum
 
-class TouristPackages(Document):
-    __TABLE__ = 'tourist_packages'
-    
+
+class TouristPackages(BaseImport):
+    __TABLE__ = MongoCollectionsEnum.TOURIST_PACKAGES.value
+    IMAGE_BUCKET = "tourist-packages"
+    DOC_TYPE_ENUM = DocTypeEnum.TOURIST_PACKAGE.value
+    STRING_FIELDS = ["sip_id", "package_id", "circuit_id", "resource_id", "product_id", "restaurant_id"]
+
+    sip_id = None
     package_id = None
+    circuit_id = None
     resource_id = None
     tourist_resource = None
     duration_hours = None
@@ -15,6 +20,7 @@ class TouristPackages(Document):
     district_commune = None
     accommodation_category = None
     title_fr = None
+    title_ar = None
     title_en = None
     title_es = None
     branch = None
@@ -30,66 +36,12 @@ class TouristPackages(Document):
     intensity = None
     is_archived = None
     archived_on = None
+    images = None
+
     status = None
     updated_at = None
+    created_at = None
 
     @classmethod
-    def insert_packages_touristiques_df(cls, df):
-        """Insert data for packages_touristiques"""
-        cls.drop()
-        
-        records = []
-        
-        mapping = {
-            "id_circuit": "circuit_id",
-            "id_ressource": "resource_id",
-            "ressource_touristique": "tourist_resource",
-            "duree_heure": "duration_hours",
-            "duree_jour": "duration_days",
-            "titre": "title_fr",
-            "thematique": "thematic",
-            "arrondissement_commune": "district_commune",
-            "Préfecture/Province": "city",
-            "region": "region",
-            "latitude": "latitude",
-            "longitude": "longitude",
-            "id_produit": "product_id",
-            "titre_produit": "product_title",
-            "id_restaurant": "restaurant_id",
-            "titre_restaurant": "restaurant_title",
-            "categorie_hebergement": "accommodation_category",
-            "intensite": "intensity",
-        }
-        
-        def clean_value(value):
-            """Convert pandas NaN to None, handle empty strings and other null-like values"""
-            if pd.isna(value):
-                return None
-            if value == '' or value == 'None' or value == 'null':
-                return None
-            return value
-        
-        for idx, row in df.iterrows():
-            rec = {}
-            for src_col, dst_field in mapping.items():
-                if src_col in df.columns:
-                    rec[dst_field] = clean_value(row.get(src_col))
-            
-            # Set document type
-            rec["document_type"] = DocTypeEnum.TOURIST_PACKAGE.value
-            
-            # Cast lat/long to float
-            for coord_field in ["latitude", "longitude"]:
-                if coord_field in rec and rec[coord_field] is not None:
-                    try:
-                        rec[coord_field] = float(rec[coord_field])
-                    except (ValueError, TypeError):
-                        rec[coord_field] = None
-
-            records.append(rec)
-        
-        if records:
-            inserted_ids = cls.bulk_insert(records, ordered=False)
-            logger.info(f"Inserted {len(inserted_ids)} new TouristPackages records.")
-        else:
-            logger.info("No new TouristPackages to insert.")
+    def insert_packages_touristiques_df(cls, df, drop_collection=True, is_from_moovapps=False):
+       cls.insert_from_df(df, drop_collection, is_from_moovapps)

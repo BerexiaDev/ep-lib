@@ -23,7 +23,7 @@ class BlacklistToken(Document):
     def check_blacklist(auth_token):
         # check whether auth token has been blacklisted
         res = BlacklistToken(None).load({'token': str(auth_token)})
-        if res.id:
+        if res and res.id:
             return True
         else:
             return False
