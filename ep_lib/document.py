@@ -268,4 +268,20 @@ class Document:
         """Perform an aggregation pipeline query."""
         return [cls(**r) for r in cls().db().aggregate(pipeline)]
     
+    @classmethod
+    def get_all_by_fields(cls, listFields):
+        try:
+            # Build Mongo projection (map 'id' to '_id' if requested)
+            projection = {}
+            for f in listFields:
+                if f.lower() in ("id",):
+                    projection["_id"] = 1
+                else:
+                    projection[f] = 1
 
+            # projection = {field: 1 for field in listFields}
+            cursor = cls().db().find({}, projection)
+            return [cls(**result) for result in cursor]
+        except Exception as e:
+            logger.error(f"Error fetching contacts by fields: {e}")
+            return []
