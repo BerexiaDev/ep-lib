@@ -539,6 +539,7 @@ class ProjectBankDTO:
             "status": NullableString(description="Resource status", skip_none=True),
             "created_at": NullableDatetime(description="Creation date", skip_none=True),
             "updated_at": NullableDatetime(description="Last update date", skip_none=True),
+            "document_type": NullableString(description="Document type"),
         },
     )    
     
