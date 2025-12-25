@@ -5,6 +5,7 @@ class ProjectBank(BaseImport):
     __TABLE__ = MongoCollectionsEnum.PROJECT_BANK.value
     IMAGE_BUCKET = "project-bank"
     STRING_FIELDS = ["sip_id"]
+    DOC_TYPE_ENUM = "PROJECT_BANK"
 
 
     sip_id = None
