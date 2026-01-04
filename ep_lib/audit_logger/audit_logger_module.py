@@ -187,6 +187,10 @@ class AuditBlueprint(Blueprint):
                     # If token decoding fails, user_info remains None
                     pass
             
+            # Skip audit logging if user_info cannot be determined
+            if user_info is None:
+                return response
+            
             self.create_log(action, table_name, endpoint, new_value=new_data, old_value=old_data, user_info=user_info)
 
         return response
