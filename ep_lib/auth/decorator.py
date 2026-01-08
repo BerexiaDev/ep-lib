@@ -82,40 +82,63 @@ def token_required(
                 if not token:
                     return {"message": "Invalid token payload"}, 401
 
-                user_role = token.get("role")
+                # Get user role array
+                user_roles = token.get("role", [])
+                
+                # Ensure it's a list
+                if not isinstance(user_roles, list):
+                    user_roles = [user_roles] if user_roles else []
 
                 # ─── ADMIN BYPASS ───────────────────────────
-                if user_role == ADMIN_ROLE:
+                if ADMIN_ROLE in user_roles:
                     return f(*args, **kwargs)
 
                 # ─── ROLE CHECK (optional) ──────────────────
                 if roles is not None:
-                    if user_role not in roles:
+                    # Check if ANY of user's roles match required roles
+                    if not any(role in roles for role in user_roles):
                         return {"message": "Permission denied (role)"}, 403
 
                 # ─── SCREEN / MODE CHECK (optional) ─────────
                 if screen is not None or mode is not None:
-                    role = RoleHelper.get_role_by_name(user_role)
-
-                    # Screen check
-                    if screen is not None:
-                        if not screen_allowed(role.screens, screen):
-                            return {
-                                "message": f"Access denied to screen '{screen}'"
-                            }, 403
-
-                    # Mode check
-                    if mode is not None:
-                        required = MODE_HIERARCHY.get(mode)
-                        actual = MODE_HIERARCHY.get(role.mode)
-
-                        if required is None or actual is None:
-                            return {"message": "Invalid mode configuration"}, 500
-
-                        if actual < required:
-                            return {
-                                "message": "Insufficient permission level"
-                            }, 403
+                    screen_access_granted = False
+                    mode_access_granted = False
+                    
+                    # Check across ALL user roles - grant if ANY role has permission
+                    for role_name in user_roles:
+                        try:
+                            role = RoleHelper.get_role_by_name(role_name)
+                            if not role:
+                                continue
+                            
+                            # Screen check - grant if ANY role has access
+                            if screen is not None:
+                                role_screens = role.screens or []
+                                if screen_allowed(role_screens, screen):
+                                    screen_access_granted = True
+                            
+                            # Mode check - grant if ANY role has sufficient mode
+                            if mode is not None:
+                                required = MODE_HIERARCHY.get(mode)
+                                actual = MODE_HIERARCHY.get(role.mode) if role.mode else None
+                                
+                                if required is not None and actual is not None:
+                                    if actual >= required:
+                                        mode_access_granted = True
+                        except Exception as e:
+                            logger.warning(f"Error checking role {role_name}: {str(e)}")
+                            continue
+                    
+                    # Final permission checks
+                    if screen is not None and not screen_access_granted:
+                        return {
+                            "message": f"Access denied to screen '{screen}'"
+                        }, 403
+                    
+                    if mode is not None and not mode_access_granted:
+                        return {
+                            "message": "Insufficient permission level"
+                        }, 403
 
                 return f(*args, **kwargs)
 
@@ -130,22 +153,30 @@ def token_required(
 
 
 def screen_allowed(role_screens, requested_screens):
-    """Check if any of the requested screens are allowed by the role's screens."""
+    """
+    Check if requested screens are allowed based on role screens.
+    Handles None/empty role_screens gracefully.
+    """
+    if not role_screens:
+        return False
+    
     if isinstance(requested_screens, str):
         requested_screens = [requested_screens]
+    
+    if not isinstance(role_screens, list):
+        role_screens = [role_screens] if role_screens else []
 
     for requested in requested_screens:
         for allowed in role_screens:
+            if not allowed:
+                continue
             # Exact match
             if requested == allowed:
                 return True
-            
             # Requested is a child of allowed
             if requested.startswith(f"{allowed}."):
                 return True
-            
             # Allowed is a child of requested (reverse)
             if allowed.startswith(f"{requested}."):
                 return True
     return False
-
