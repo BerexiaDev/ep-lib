@@ -97,7 +97,7 @@ def token_required(
                 if roles is not None:
                     # Check if ANY of user's roles match required roles
                     if not any(role in roles for role in user_roles):
-                        return {"message": "Permission denied (role)"}, 403
+                        return {"message": "Permission denied (role)"}, 401
 
                 # ─── SCREEN / MODE CHECK (optional) ─────────
                 if screen is not None or mode is not None:
@@ -132,13 +132,13 @@ def token_required(
                     # Final permission checks
                     if screen is not None and not screen_access_granted:
                         return {
-                            "message": f"Access denied to screen '{screen}'"
-                        }, 403
+                            "message": f"Access denied to this resource"
+                        }, 401
                     
                     if mode is not None and not mode_access_granted:
                         return {
                             "message": "Insufficient permission level"
-                        }, 403
+                        }, 401
 
                 return f(*args, **kwargs)
 
