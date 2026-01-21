@@ -337,6 +337,7 @@ EXCEL_TO_MONGO_FIELD_MAPPINGS = {
         "investissement_touristique": "tourism_investment",
         "emplois_directs": "direct_jobs",
         "intensite": "intensity",
+        "images": "images",
         "status": "status",
         "updated_at": "updated_at",
         "created_at": "created_at"
@@ -361,6 +362,7 @@ EXCEL_TO_MONGO_FIELD_MAPPINGS = {
         "capacite_lits": "bed_capacity",
         "emplois_directs": "direct_jobs",
         "intensite": "intensity",
+        "images": "images",
         "status": "status",
         "updated_at": "updated_at",
         "created_at": "created_at"
