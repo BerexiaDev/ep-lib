@@ -27,8 +27,11 @@ class BaseImport(Document, MinioUtilities):
     
 
     def __init__(self, **kwargs):
+        # Check if MinIO processing should be skipped
+        skip_minio = kwargs.pop('_skip_minio_processing', False)
+        
         Document.__init__(self, **kwargs)
-        if self.IMAGE_BUCKET:
+        if self.IMAGE_BUCKET and not skip_minio:
             MinioUtilities.__init__(self, image_bucket=self.IMAGE_BUCKET, **kwargs)
 
     

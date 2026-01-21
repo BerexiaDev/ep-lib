@@ -107,13 +107,16 @@ class Document:
         return self
 
     @classmethod
-    def get_all(cls, query=None, skip=0, limit=0, sort=None, random_sample=False, collation=None, **kwargs):
+    def get_all(cls, query=None, skip=0, limit=0, sort=None, random_sample=False, collation=None, skip_minio_processing=False, **kwargs):
         """Return documents matching *query* with optional sampling.
 
         When ``random_sample`` is True and a positive ``limit`` is provided, the
         query is executed through an aggregation pipeline that performs a
         ``$sample`` stage. This yields a randomized subset of documents while
         respecting the provided filters and limit.
+        
+        When ``skip_minio_processing`` is True, MinIO image processing (array normalization
+        and presigned URL generation) will be skipped, preserving the original database format.
         """
 
         query = query or {}
@@ -128,6 +131,8 @@ class Document:
                 cursor = collection.aggregate(pipeline, collation=collation)
             else:
                 cursor = collection.aggregate(pipeline)
+            if skip_minio_processing:
+                return [cls(_skip_minio_processing=True, **r) for r in cursor]
             return [cls(**r) for r in cursor]
 
         if collation:
@@ -141,6 +146,8 @@ class Document:
         if limit:
             cursor = cursor.limit(limit)
 
+        if skip_minio_processing:
+            return [cls(_skip_minio_processing=True, **r) for r in cursor]
         return [cls(**r) for r in cursor]
 
     @classmethod
