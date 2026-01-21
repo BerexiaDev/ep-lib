@@ -133,6 +133,11 @@ class AuditBlueprint(Blueprint):
                     # This ensures we catch changes from None to actual values
                     new_data, old_data = get_only_changed_values_and_id(old_data or {}, new_data)
 
+                    # Only for update operations, if old_value has no data, do not log
+                    if request.method in ["PUT", "PATCH"]:
+                        if not old_data or (isinstance(old_data, dict) and not old_data) or (isinstance(old_data, list) and len(old_data) == 0):
+                            return response
+
                 if response.status_code == 201:
                     if isinstance(new_data, list):
                         final_value = [get_primary_key_value(primary_key_splits, d) for d in new_data]
