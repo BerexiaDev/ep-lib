@@ -3,6 +3,7 @@ from flask import request
 from loguru import logger
 from ep_lib.auth.auth_helper import AuthHelper
 from ep_lib.auth.role_helper import RoleHelper
+from flask import current_app
 
 
 
@@ -180,3 +181,16 @@ def screen_allowed(role_screens, requested_screens):
             if allowed.startswith(f"{requested}."):
                 return True
     return False
+
+
+def service_token_required(header_name="X-Internal-Token"):
+    def decorator(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            SERVICE_TOKEN = current_app.config.get("INTERNAL_TOKEN")
+            token = request.headers.get(header_name)
+            if not token or token != SERVICE_TOKEN:
+                return {"message": "Access denied"}, 401
+            return f(*args, **kwargs)
+        return wrapper
+    return decorator
