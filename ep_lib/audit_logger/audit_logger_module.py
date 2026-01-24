@@ -175,6 +175,8 @@ class AuditBlueprint(Blueprint):
                 action = "IMPORT"
             elif table_name.startswith("s2i_export"):
                 action = "EXPORT"
+            elif table_name == "moovapps_sync":
+                action = "SYNC"
             else:
                 action = get_action(request.method, response.status_code)
             
