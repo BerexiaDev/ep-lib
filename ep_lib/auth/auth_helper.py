@@ -4,9 +4,13 @@ from ep_lib.auth.portal_user import PortalUser
 class AuthHelper:
     
     @staticmethod
+    def get_auth_token(request):
+        """Extract auth token from cookies"""
+        return request.cookies.get('access_token')
+    
+    @staticmethod
     def get_logged_in_user(request):
-        authorization = request.headers.get('Authorization')
-        auth_token = authorization.split(" ")[1]
+        auth_token = AuthHelper.get_auth_token(request)
         if auth_token:
             resp = User.decode_auth_token(auth_token)
             if not isinstance(resp, str):
@@ -55,8 +59,7 @@ class AuthHelper:
         
     @staticmethod
     def get_logged_in_portal_user(request):
-        authorization = request.headers.get('Authorization')
-        auth_token = authorization.split(" ")[1]
+        auth_token = AuthHelper.get_auth_token(request)
         if auth_token:
             resp = PortalUser.decode_auth_token(auth_token)
             if not isinstance(resp, str):
