@@ -84,7 +84,7 @@ def token_required(
                     return {"message": "Invalid token payload"}, 401
 
                 
-                if not token.get("is_active"):
+                if not token.get("is_active", True):
                     return {"message": "User is inactive"}, 401
 
                 # Get user role array
