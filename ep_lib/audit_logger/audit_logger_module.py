@@ -5,6 +5,7 @@ from ep_lib.audit_logger.models.audit_trail import AuditTrail
 from ep_lib.audit_logger.utils import get_json_body, get_only_changed_values_and_id, get_action, get_primary_key_value
 from ep_lib.audit_logger.utils import IGNORE_PATHS
 from ep_lib.auth.user import User
+from ep_lib.auth.auth_helper import AuthHelper
 
 SUCCESS_STATUS_CODES = [200, 201, 204]
 DEFAULT_LOG_METHODS = ["POST", "PUT", "DELETE", "PATCH"]
@@ -175,19 +176,21 @@ class AuditBlueprint(Blueprint):
                 action = "IMPORT"
             elif table_name.startswith("s2i_export"):
                 action = "EXPORT"
+            elif table_name == "moovapps_sync":
+                action = "SYNC"
             else:
                 action = get_action(request.method, response.status_code)
             
-            # Handle missing Authorization header (e.g., during login requests)
-            auth_header = request.headers.get('Authorization')
+            # Extract auth token from cookie
+            auth_token = AuthHelper.get_auth_token(request)
             user_info = None
             
-            if auth_header and ' ' in auth_header:
+            if auth_token:
                 try:
-                    auth_token = auth_header.split(" ")[1]
                     decode_resp = User.decode_auth_token(auth_token)
-                    user = User().load({'_id': decode_resp.get("token")})
-                    user_info = user.to_dict()
+                    if decode_resp.get("status") == "success":
+                        user = User().load({'_id': decode_resp.get("token")})
+                        user_info = user.to_dict()
                 except Exception:
                     # If token decoding fails, user_info remains None
                     pass

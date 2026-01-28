@@ -5,8 +5,14 @@ class AuthHelper:
     
     @staticmethod
     def get_auth_token(request):
-        """Extract auth token from cookies"""
-        return request.cookies.get('access_token')
+        """
+        Extract auth token from request cookies.
+        """
+        token = request.cookies.get('access_token')
+        if token:
+            return token
+
+        return None
     
     @staticmethod
     def get_logged_in_user(request):
