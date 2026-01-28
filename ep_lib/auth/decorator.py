@@ -3,7 +3,6 @@ from flask import request
 from loguru import logger
 from ep_lib.auth.auth_helper import AuthHelper
 from ep_lib.auth.role_helper import RoleHelper
-from flask import current_app
 
 
 
@@ -59,7 +58,8 @@ def token_required(
 
             try:
                 # ─── TOKEN CHECK ────────────────────────────
-                if "Authorization" not in request.headers:
+                # Check for token in cookies
+                if not request.cookies.get('access_token'):
                     return {"message": "Token is missing"}, 401
 
                 # ─── AUTHENTICATION ─────────────────────────
