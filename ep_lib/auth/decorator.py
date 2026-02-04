@@ -32,7 +32,8 @@ def token_required(
     portal_user=False,
     accept_both=False,
     screen=None,
-    mode=None
+    mode=None,
+    role_fo_name=None
 ):
     """
     JWT Authentication & Authorization decorator
@@ -57,6 +58,7 @@ def token_required(
             ):
                 return f(*args, **kwargs)
 
+            is_fo_request = True
             try:
                 # ─── TOKEN CHECK ────────────────────────────
                 if "Authorization" not in request.headers:
@@ -64,17 +66,15 @@ def token_required(
 
                 # ─── AUTHENTICATION ─────────────────────────
                 if accept_both:
-                    try:
-                        data, status = AuthHelper.get_logged_in_portal_user(request)
-                        if status != 200:
-                            data, status = AuthHelper.get_logged_in_user(request)
-                    except Exception:
+                    data, status = AuthHelper.get_logged_in_portal_user(request)
+                    if status != 200:
                         data, status = AuthHelper.get_logged_in_user(request)
+                        is_fo_request = False
+                elif portal_user:
+                    data, status = AuthHelper.get_logged_in_portal_user(request)
                 else:
-                    if portal_user:
-                        data, status = AuthHelper.get_logged_in_portal_user(request)
-                    else:
-                        data, status = AuthHelper.get_logged_in_user(request)
+                    data, status = AuthHelper.get_logged_in_user(request)
+                    is_fo_request = False
 
                 if status != 200:
                     return {"message": "Invalid token"}, 401
@@ -89,6 +89,13 @@ def token_required(
                 # Ensure it's a list
                 if not isinstance(user_roles, list):
                     user_roles = [user_roles] if user_roles else []
+
+                
+                if role_fo_name and is_fo_request:
+                    profiles = token.get("profile", [])
+                    if not role_fo_name in profiles:
+                        return {"message": "Permission denied"}, 401
+
 
                 # ─── ADMIN BYPASS ───────────────────────────
                 if ADMIN_ROLE in user_roles:
