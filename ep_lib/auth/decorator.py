@@ -4,6 +4,7 @@ from loguru import logger
 from ep_lib.auth.auth_helper import AuthHelper
 from ep_lib.auth.role_helper import RoleHelper
 from flask import current_app
+from ep_lib.services.recaptch_service import verify_captcha
 
 
 
@@ -192,5 +193,23 @@ def service_token_required(header_name="X-Internal-Token"):
             if not token or token != SERVICE_TOKEN:
                 return {"message": "Access denied"}, 401
             return f(*args, **kwargs)
+        return wrapper
+    return decorator
+
+
+def require_recaptcha(token_field: str = "recaptcha_token"):
+    def decorator(fn):
+        def wrapper(*args, **kwargs):
+            body = request.get_json(silent=True) or {}
+            token = body.get(token_field)
+
+            is_token_valid = verify_captcha(token)
+            if not token or not is_token_valid:
+                return {
+                    "status": "fail",
+                    "message": "CAPTCHA invalide ou manquant. Veuillez réessayer."
+                }, 400
+
+            return fn(*args, **kwargs)
         return wrapper
     return decorator
