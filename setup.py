@@ -6,7 +6,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         "cryptography==44.0.2",
-        "flask-restx==1.2.0",
+        "flask-restx==1.3.2",
         "inject==5.0.0",
         "python-dotenv==0.21.1",
         "PyJWT==1.5.3",
