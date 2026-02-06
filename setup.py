@@ -9,7 +9,7 @@ setup(
         "flask-restx==1.3.2",
         "inject==5.0.0",
         "python-dotenv==0.21.1",
-        "PyJWT==1.5.3",
+        "PyJWT==2.9.0",
         "loguru==0.6.0",
         "pandas==1.3.5",
         "numpy==1.21.6",
