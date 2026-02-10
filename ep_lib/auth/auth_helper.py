@@ -61,6 +61,8 @@ class AuthHelper:
             resp = PortalUser.decode_auth_token(auth_token)
             if not isinstance(resp, str):
                 user = PortalUser().load({'_id':resp['token']})
+                if not user:
+                    return "User not found", 404
                 response_object = {
                     'status': 'success',
                     'data': {
@@ -69,6 +71,7 @@ class AuthHelper:
                         'first_name': user.first_name,
                         'last_name': user.last_name,
                         'created_on': str(user.created_on),
+                        'profile': user.profile
                     }
                 }
                 return response_object, 200
