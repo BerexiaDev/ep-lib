@@ -82,21 +82,20 @@ def get_minio_client() -> Minio:
     """
     config = current_app.config
     endpoint, inferred_secure = _resolve_endpoint(config)
-    secure = config.get("MINIO_SECURE", False) if inferred_secure is None else inferred_secure
 
-    access_key = config.get("MINIO_ROOT_USER")
-    secret_key = config.get("MINIO_ROOT_PASSWORD")
+    access_key = config.get("MINIO_USER")
+    secret_key = config.get("MINIO_PASSWORD")
     # Default MinIO region is us-east-1; setting it avoids extra network lookups during presign.
     region = config.get("MINIO_REGION") or "us-east-1"
 
     if not access_key or not secret_key:
-        raise RuntimeError("Both MINIO_ROOT_USER and MINIO_ROOT_PASSWORD must be configured.")
+        raise RuntimeError("Both MINIO_USER and MINIO_PASSWORD must be configured.")
 
     return Minio(
         endpoint,
         access_key=access_key,
         secret_key=secret_key,
-        secure=secure,
+        secure=True,
         region=region,
         http_client=_build_http_client(),
     )
@@ -213,7 +212,8 @@ def generate_presigned_url(
     try:
         endpoint, inferred_secure = _resolve_endpoint(cfg)
         region = cfg.get("MINIO_REGION") or "us-east-1"
-        secure = cfg.get("MINIO_SECURE", False) if inferred_secure is None else inferred_secure
+        # Always use HTTPS for communication with MinIO
+        secure = True
     except Exception as exc:  # noqa: BLE001
         logger.error(f"Unable to resolve MinIO endpoint for presigned URL: {exc}")
         return ""
@@ -247,6 +247,16 @@ def generate_presigned_url(
                 object_name=object_name,
                 expires=timedelta(seconds=ttl),
             )
+            # Ensure the presigned URL uses HTTPS regardless of client or environment
+            try:
+                parsed_presigned = urlparse(presigned)
+                if parsed_presigned.scheme.lower() != "https":
+                    parsed_presigned = parsed_presigned._replace(scheme="https")
+                    presigned = urlunparse(parsed_presigned)
+            except Exception:
+                # Fallback: simple replace if parse fails
+                if presigned.startswith("http://"):
+                    presigned = "https://" + presigned[len("http://"):]
             break
         except S3Error as exc:
             last_exc = exc
@@ -290,8 +300,9 @@ def generate_presigned_url(
             target = urlparse(public_base)
             netloc = target.netloc or target.path
             if netloc:
+                # Force HTTPS when applying public override
                 parsed = list(urlparse(presigned))
-                parsed[0] = target.scheme or parsed[0]
+                parsed[0] = "https"
                 parsed[1] = netloc
                 if target.path not in ("", "/"):
                     parsed[2] = target.path.rstrip("/") + parsed[2]
