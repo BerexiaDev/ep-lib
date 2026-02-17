@@ -95,13 +95,20 @@ def token_required(
                 if not isinstance(user_roles, list):
                     user_roles = [user_roles] if user_roles else []
 
+                # ─── PORTAL USER CHECKS ──────────────────────
+                if portal_user and is_fo_request:
+                    if role_fo_name:
+                        profiles = token.get("profile", [])
+                        if role_fo_name not in profiles:
+                            return {"message": "Permission denied"}, 401
+                    return f(*args, **kwargs)
+
+                # For accept_both: skip screen/role checks for portal users
+                if accept_both and is_fo_request:
+                    return f(*args, **kwargs)
+
+                # ─── FROM HERE: BACK-OFFICE USERS ONLY ───────
                 
-                if role_fo_name and is_fo_request:
-                    profiles = token.get("profile", [])
-                    if not role_fo_name in profiles:
-                        return {"message": "Permission denied"}, 401
-
-
                 # ─── ADMIN BYPASS ───────────────────────────
                 if ADMIN_ROLE in user_roles:
                     return f(*args, **kwargs)
