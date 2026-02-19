@@ -28,22 +28,6 @@ MODE_HIERARCHY = {
     "WRITE": 2
 }
 
-
-S2I_COLLECTION_SECTION_KEYS = { 
-    "tourist_products": "produits_touristiques", 
-    "restaurant_products": "produits_restauration", 
-    "unclassified_accommodation": "hebergement_non_classe", 
-    "tourist_packages": "packages_touristiques", 
-    "accommodation_opportunities": "opportunites_hebergement", 
-    "land_opportunities": "opportunites_foncier", 
-    "project_bank": "banque_de_projet", 
-    "land_resources": "ressources_foncieres", 
-    "tourism_resources": "tourism_resources", 
-    "marketplace": "marketplace", 
-    "tourism_investment": "investissement_touristique", 
-    "tourism_offer": "offre_touristique", 
-}
-
 def token_required(
     roles=None,
     portal_user=False,
@@ -195,27 +179,27 @@ def screen_allowed(role_screens, requested_screens):
     """
     if not role_screens:
         return False
-
-    # Ensure inputs are lists
+    
     if isinstance(requested_screens, str):
         requested_screens = [requested_screens]
-
+    
     if not isinstance(role_screens, list):
-        role_screens = [role_screens]
+        role_screens = [role_screens] if role_screens else []
 
     for requested in requested_screens:
-        # Handle special "s2i" case
-        if requested == "s2i":
-            raw_collection = request.args.get('collection') or request.args.get('section')
-            requested_collection = S2I_COLLECTION_SECTION_KEYS.get(raw_collection, raw_collection)
-            requested = f"{requested}.{requested_collection}" if requested_collection else requested
-
-        for allowed in filter(None, role_screens):
-            if requested == allowed or requested.startswith(f"{allowed}.") or allowed.startswith(f"{requested}."):
+        for allowed in role_screens:
+            if not allowed:
+                continue
+            # Exact match
+            if requested == allowed:
                 return True
-
+            # Requested is a child of allowed
+            if requested.startswith(f"{allowed}."):
+                return True
+            # Allowed is a child of requested (reverse)
+            if allowed.startswith(f"{requested}."):
+                return True
     return False
-
 
 
 def service_token_required(header_name="X-Internal-Token"):
