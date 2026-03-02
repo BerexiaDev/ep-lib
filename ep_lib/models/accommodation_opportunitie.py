@@ -32,14 +32,9 @@ class AccommodationOpportunities(BaseImport):
     description_es = None
     latitude = None
     longitude = None
-    urban_planning_status = None
-    accessibility = None
-    availability = None
     area = None
     investment_amount = None
     asset_status = None
-    transfer_conditions = None
-    intensity = None
     document_type = None
     is_archived = None
     archived_on = None

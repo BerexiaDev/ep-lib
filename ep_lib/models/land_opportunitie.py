@@ -36,20 +36,12 @@ class LandOpportunities(BaseImport):
     
     latitude = None
     longitude = None
-    site_topography = None
     
     asset_type = None
     category = None
-    urban_planning_status = None
-    environmental_constraints = None
-    
-    accessibility = None
-    availability = None
-    transfer_conditions = None
     
     area = None
     investment_amount = None
-    intensity = None
 
     document_type = None
     is_archived = None
