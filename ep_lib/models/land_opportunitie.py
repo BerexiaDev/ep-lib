@@ -41,6 +41,7 @@ class LandOpportunities(BaseImport):
     category = None
     
     area = None
+    investment_amount = None
 
     document_type = None
     is_archived = None
