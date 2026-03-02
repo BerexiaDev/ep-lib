@@ -399,6 +399,7 @@ class LandOpportunityDTO:
             "asset_type": NullableString(description="Asset type"),
             "category": NullableString(description="Category"),
             "area": NullableString(description="Area"),
+            "investment_amount": NullableString(description="Investment amount"),
             "document_type": NullableString(description="Document type"),
             "district_municipality": NullableString(description="Arrondissement Commune"),
             "archived_on": NullableDatetime(description="Date of archivation"),
