@@ -13,7 +13,7 @@ audit_pagination = AuditDto.audit_pagination
 
 @api.route("/search")
 class AuditSearch(Resource):
-    @token_required(roles=["ADMIN"])
+    @token_required(screen="audit_logs.application_audit")
     @api.doc("Get Audit logs")
     @api.marshal_list_with(audit_pagination, skip_none=True)
     @api.response(200, "Audit log successfully retrieved paginated.")
