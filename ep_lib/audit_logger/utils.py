@@ -72,6 +72,10 @@ def get_only_changed_values(old_data: dict, new_data: dict):
                     if new_d1 != old_d1:
                         diff_dict[key] = new_data[key]
                         old_dict[key] = old_data[key]
+            elif new_data[key] != old_data[key]:
+                # If the values are different, add to the diff_dict
+                diff_dict[key] = new_data[key]
+                old_dict[key] = old_data[key]
         else:
             # If the key is not present in dict2, add to the diff_dict
             diff_dict[key] = new_data[key]
