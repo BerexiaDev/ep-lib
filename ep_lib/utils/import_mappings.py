@@ -308,7 +308,8 @@ EXCEL_TO_MONGO_FIELD_MAPPINGS = {
     },
 
     MongoCollectionsEnum.TOURISM_INVESTMENT.value: {
-        "id": "id",
+        "id": "_id",
+        "sip_id": "sip_id",
         "region": "region",
         "prefecture_province": "city",
         "arrondissement_commune": "district_municipality",
@@ -331,7 +332,8 @@ EXCEL_TO_MONGO_FIELD_MAPPINGS = {
         "created_at": "created_at"
     },
     MongoCollectionsEnum.TOURISM_OFFER.value: {
-        "id": "id",
+        "id": "_id",
+        "sip_id": "sip_id",
         "region": "region",
         "prefecture_province": "city",
         "arrondissement_commune": "district_municipality",

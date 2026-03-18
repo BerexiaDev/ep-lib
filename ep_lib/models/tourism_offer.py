@@ -5,8 +5,8 @@ class TourismOffer(BaseImport):
     __TABLE__ = MongoCollectionsEnum.TOURISM_OFFER.value
 
     IMAGE_BUCKET = "tourism-offer"
-
-    id = None	
+	
+    sip_id = None
     region = None	
     prefecture_province = None	
     arrondissement_commune = None	

@@ -4,8 +4,8 @@ from ep_lib.utils.enums import MongoCollectionsEnum
 class TourismInvestment(BaseImport):
     __TABLE__ = MongoCollectionsEnum.TOURISM_INVESTMENT.value
     IMAGE_BUCKET = "tourism-investment"
-
-    id = None	
+	
+    sip_id = None
     region = None	
     prefecture_province = None	
     arrondissement_commune = None	
