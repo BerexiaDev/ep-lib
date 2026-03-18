@@ -61,8 +61,14 @@ def get_only_changed_values(old_data: dict, new_data: dict):
                 else:
                     new_d1 = copy.deepcopy(new_data[key])
                     old_d1 = copy.deepcopy(old_data[key])
-                    new_d1.sort()
-                    old_d1.sort()
+                    
+                    # Try to sort, but gracefully catch the error if elements are dicts
+                    try:
+                        new_d1.sort()
+                        old_d1.sort()
+                    except TypeError:
+                        pass 
+                        
                     if new_d1 != old_d1:
                         diff_dict[key] = new_data[key]
                         old_dict[key] = old_data[key]
