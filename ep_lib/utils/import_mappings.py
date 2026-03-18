@@ -329,7 +329,16 @@ EXCEL_TO_MONGO_FIELD_MAPPINGS = {
         "images": "images",
         "status": "status",
         "updated_at": "updated_at",
-        "created_at": "created_at"
+        "created_at": "created_at",
+
+        "type_actif_en": "asset_type_en",
+        "categorie_en": "category_en",
+        "type_classement_en": "classification_type_en",
+        "thematique_en": "branch_en",
+        "type_gestion_en": "management_type_en",
+        "nationalite_en": "nationality_en",
+        "profil_investisseur_en": "investor_profile_en",
+        "etat_avancement_en": "progress_report_en",
     },
     MongoCollectionsEnum.TOURISM_OFFER.value: {
         "id": "_id",
@@ -355,7 +364,17 @@ EXCEL_TO_MONGO_FIELD_MAPPINGS = {
         "images": "images",
         "status": "status",
         "updated_at": "updated_at",
-        "created_at": "created_at"
+        "created_at": "created_at",
+
+        "type_actif_en": "asset_type_en",
+        "categorie_en": "category_en",
+        "type_classement_en": "classification_type_en",
+        "thematique_en": "branch_en",
+        "type_gestion_en": "management_type_en",
+        "nationalite_en": "nationality_en",
+        "profil_investisseur_en": "investor_profile_en",
+        "etat_avancement_en": "progress_report_en",
+
     }
 }
 
