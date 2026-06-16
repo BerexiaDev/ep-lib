@@ -650,6 +650,62 @@ class TourismInvestmentDTO:
         },
     )
 
+
+class EhtArrivalsNightsDTO:
+    api = Namespace("EhtArrivalsNights", description="Eht Arrivals Nights related operations")
+    eht_arrivals_nights = api.model(
+        "EhtArrivalsNights",
+        {
+            "id": NullableString(description="Eht Arrivals Nights ID"),
+            "sip_id": NullableString(description="SMIT Eht Arrivals Nights ID"),
+            "region": NullableString(description="Region"),
+            "province": NullableString(description="Prefecture Province"),
+            "branch": NullableString(description="Branch"),
+            "nights": NullableInteger(description="Nights"),
+            "category": NullableString(description="Category"),
+            "nationality": NullableString(description="Nationality"),
+            "arrivals": NullableInteger(description="Arrivals"),
+            "destination": NullableString(description="Destination"),
+            "year": NullableInteger(description="Year"),
+            "month": NullableString(description="Month"),
+            "status": NullableString(description="Status"),
+            "updated_at": NullableDatetime(description="Updated at"),
+            "created_at": NullableDatetime(description="Created at"),
+            "is_archived": NullableBoolean(description="Is archived"),
+            "archived_on": NullableDatetime(description="Archived on"),
+        },
+    )
+
+
+class PostBorderArrivalsDTO:
+    api = Namespace("PostBorderArrivals", description="Post Border Arrivals related operations")
+    post_border_arrivals = api.model(
+        "PostBorderArrivals",
+        {
+            "id": NullableString(description="Post Border Arrivals ID"),
+            "sip_id": NullableString(description="SMIT Post Border Arrivals ID"),
+            "nomination_structure_fr": NullableString(description="Nomination Structure"),
+            "nomination_structure_ar": NullableString(description="Nomination Structure in Arabic"),
+            "nomination_structure_en": NullableString(description="Nomination Structure in English"),
+            "nomination_structure_es": NullableString(description="Nomination Structure in Spanish"),
+            "year": NullableInteger(description="Year"),
+            "month_fr": NullableString(description="Month in French"),
+            "month_en": NullableString(description="Month in English"),
+            "month_es": NullableString(description="Month in Spanish"),
+            "month_ar": NullableString(description="Month in Arabic"),
+            "structure_type_fr": NullableString(description="Structure Type in French"),
+            "structure_type_ar": NullableString(description="Structure Type in Arabic"),
+            "structure_type_en": NullableString(description="Structure Type in English"),
+            "structure_type_es": NullableString(description="Structure Type in Spanish"),
+            "visitor_type": NullableString(description="Visitor Type"),
+            "status": NullableString(description="Status"),
+            "updated_at": NullableDatetime(description="Updated at"),
+            "created_at": NullableDatetime(description="Created at"),
+            "is_archived": NullableBoolean(description="Is archived"),
+            "archived_on": NullableDatetime(description="Archived on"),
+        },
+    )
+
 class S2IDTO:
     api = Namespace("S2I", description="S2I import/export operations")    
 
@@ -667,7 +723,9 @@ class S2IDTO:
         TouristResourceDTO.tourist_resource,
         MarketplaceDTO.marketplace,
         TourismInvestmentDTO.tourism_investment,
-        TourismOfferDTO.tourism_offer
+        TourismOfferDTO.tourism_offer,
+        EhtArrivalsNightsDTO.eht_arrivals_nights,
+        PostBorderArrivalsDTO.post_border_arrivals,
     )
 
     save_response_s2i_item = api.model(
