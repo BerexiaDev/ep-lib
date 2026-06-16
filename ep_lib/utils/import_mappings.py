@@ -339,6 +339,11 @@ EXCEL_TO_MONGO_FIELD_MAPPINGS = {
         "nationalite_en": "nationality_en",
         "profil_investisseur_en": "investor_profile_en",
         "etat_avancement_en": "progress_report_en",
+
+        "emploi_cnss": "jobs_cnss",
+        "homme_cnss": "men_cnss",
+        "femme_cnss": "women_cnss",
+        "probabilite_de_realisation": "realization_probability",
     },
     MongoCollectionsEnum.TOURISM_OFFER.value: {
         "id": "_id",
@@ -374,6 +379,13 @@ EXCEL_TO_MONGO_FIELD_MAPPINGS = {
         "nationalite_en": "nationality_en",
         "profil_investisseur_en": "investor_profile_en",
         "etat_avancement_en": "progress_report_en",
+
+        "annee_ouverture_mt": "opening_year_mt",
+        "capacite_chambre_mt": "room_capacity_mt",
+        "capacite_lits_mt": "bed_capacity_mt",
+        "etat_avancement_mt": "progress_report_mt",
+        "Nuitees_potentielles": "potential_nights",
+        "probabilite_de_realisation": "realization_probability",
 
     },
     MongoCollectionsEnum.EHT_ARRIVALS_NIGHTS.value: {

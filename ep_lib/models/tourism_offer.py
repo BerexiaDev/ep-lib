@@ -42,6 +42,13 @@ class TourismOffer(BaseImport):
     investor_profile_en = None
     progress_report_en = None
 
+    opening_year_mt = None
+    room_capacity_mt = None
+    bed_capacity_mt = None
+    progress_report_mt = None
+    potential_nights = None
+    realization_probability = None
+
     @classmethod
     def insert_tourism_offer_df(cls, df, drop_collection=True, is_from_moovapps=False):
         cls.insert_from_df(df, drop_collection, is_from_moovapps)

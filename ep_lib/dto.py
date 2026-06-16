@@ -611,6 +611,13 @@ class TourismOfferDTO:
             "status": NullableString(description="Resource status", skip_none=True),
             "created_at": NullableDatetime(description="Creation date", skip_none=True),
             "updated_at": NullableDatetime(description="Last update date", skip_none=True),
+
+            "opening_year_mt": NullableInteger(description="Opening year"),
+            "room_capacity_mt": NullableInteger(description="Room capacity"),
+            "bed_capacity_mt": NullableInteger(description="Bed capacity"),
+            "progress_report_mt": NullableString(description="Progress report"),
+            "potential_nights": NullableInteger(description="Potential nights"),
+            "realization_probability": NullableFloat(description="Realization probability"),
         },
     )
 
@@ -647,6 +654,11 @@ class TourismInvestmentDTO:
             "status": NullableString(description="Resource status", skip_none=True),
             "created_at": NullableDatetime(description="Creation date", skip_none=True),
             "updated_at": NullableDatetime(description="Last update date", skip_none=True),
+
+            "jobs_cnss": NullableInteger(description="Jobs CNSS"),
+            "men_cnss": NullableInteger(description="Men CNSS"),
+            "women_cnss": NullableInteger(description="Women CNSS"),
+            "realization_probability": NullableFloat(description="Realization probability"),
         },
     )
 
