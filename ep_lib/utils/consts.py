@@ -12,7 +12,8 @@ from ep_lib.models.tourist_resource  import TouristResources
 from ep_lib.models.marketplace  import Marketplace
 from ep_lib.models.tourism_investment  import TourismInvestment
 from ep_lib.models.tourism_offer  import TourismOffer
-
+from ep_lib.models.arrivees_nuitees  import ArriveesNuitees
+from ep_lib.models.arrivees_post_frontieres  import ArriveesPostFrontieres
 
 
 MongoCollectionToModelMap = {
@@ -28,6 +29,8 @@ MongoCollectionToModelMap = {
     MongoCollectionsEnum.MARKETPLACE.value: Marketplace,
     MongoCollectionsEnum.TOURISM_INVESTMENT.value: TourismInvestment,
     MongoCollectionsEnum.TOURISM_OFFER.value: TourismOffer,
+    MongoCollectionsEnum.EHT_ARRIVALS_NIGHTS.value: ArriveesNuitees,
+    MongoCollectionsEnum.POST_BORDER_ARRIVALS.value: ArriveesPostFrontieres,
 }
 
 
