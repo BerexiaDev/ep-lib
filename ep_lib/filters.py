@@ -67,7 +67,11 @@ def build_filters(filters):
                 mongo_query[field_code] = {"$gt": value_datetime}
 
         elif operator == "EQUALS":
-            mongo_query[field_code] = value
+            # case insensitive
+            if isinstance(value, str):
+                mongo_query[field_code] = {"$regex": value, "$options": "i"}
+            else:
+                mongo_query[field_code] = value
         elif operator == "NOT EQUALS":
             mongo_query[field_code] = {"$ne": value}
         elif operator == "CONTAINS":
