@@ -21,6 +21,8 @@ class DocTypeEnum(Enum):
     TOURIST_PACKAGE = "TOURIST_PACKAGE"
     MARKETPLACE = "MARKETPLACE"
     PROJECT_BANK = "PROJECT_BANK"
+    EHT_ARRIVALS_NIGHTS = "EHT_ARRIVALS_NIGHTS"
+    POST_BORDER_ARRIVALS = "POST_BORDER_ARRIVALS"
 
 
 class MongoCollectionsEnum(Enum):
@@ -36,6 +38,8 @@ class MongoCollectionsEnum(Enum):
     MARKETPLACE = "marketplace"
     TOURISM_INVESTMENT = "tourism_investment"
     TOURISM_OFFER = "tourism_offer"
+    EHT_ARRIVALS_NIGHTS = "arrivees_nuitees"
+    POST_BORDER_ARRIVALS = "arrivees_post_frontieres"
 
 
 class S2IStatusEnum(Enum):

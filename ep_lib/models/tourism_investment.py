@@ -39,6 +39,11 @@ class TourismInvestment(BaseImport):
     investor_profile_en = None
     progress_report_en = None
 
+    jobs_cnss = None
+    men_cnss = None
+    women_cnss = None
+    realization_probability = None
+
     @classmethod
     def insert_tourism_investment_df(cls, df, drop_collection=True, is_from_moovapps=False):
         cls.insert_from_df(df, drop_collection, is_from_moovapps)
