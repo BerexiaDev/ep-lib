@@ -1,11 +1,12 @@
 from ep_lib.models.base_import import BaseImport
 from ep_lib.utils.enums import MongoCollectionsEnum
+from ep_lib.utils.enums import DocTypeEnum
 
 class ProjectBank(BaseImport):
     __TABLE__ = MongoCollectionsEnum.PROJECT_BANK.value
     IMAGE_BUCKET = "project-bank"
     STRING_FIELDS = ["sip_id"]
-    DOC_TYPE_ENUM = "PROJECT_BANK"
+    DOC_TYPE_ENUM = DocTypeEnum.PROJECT_BANK.value
 
 
     sip_id = None
@@ -39,6 +40,9 @@ class ProjectBank(BaseImport):
     is_archived = None
     archived_on = None
     images = None
+
+    land_id = None
+    code = None
 
     status = None
     updated_at = None
