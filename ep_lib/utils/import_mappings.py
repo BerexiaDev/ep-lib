@@ -213,6 +213,7 @@ EXCEL_TO_MONGO_FIELD_MAPPINGS = {
         "description_en": "description_en",
         "description_es": "description_es",
         "id_foncier": "land_id",
+        "code": "code",
         "images": "images",
         "status": "status",
         "updated_at": "updated_at",
